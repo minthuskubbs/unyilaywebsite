@@ -1,0 +1,300 @@
+/* ===== Hero =====
+   Matches the real production markup (#top-banner/#caption-div in
+   html_version/Home V2 ...html): a full image, not a background-cover
+   crop, with the caption absolutely positioned top-left over it. */
+.unyl-hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    background: var(--unyl-bg);
+    overflow: hidden;
+}
+.unyl-hero__media { width: 100%; }
+.unyl-hero__media img { display: block; width: 100%; height: auto; }
+.unyl-hero__caption {
+    position: absolute;
+    top: 15%;
+    left: 8%;
+    width: 100%;
+    overflow: hidden;
+}
+.unyl-hero__caption-inner { width: 60%; color: var(--unyl-text); }
+.unyl-hero__title {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    /* Figma spec (node 103:1901 "Hero Title"): 68px at desktop. */
+    font-size: clamp(2rem, 5.5vw, 68px);
+    line-height: 1.2;
+    margin: 0 0 24px;
+}
+.unyl-hero__subtitle {
+    font-family: var(--font-sans);
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--unyl-text-dim);
+    margin: 0 0 32px;
+    max-width: 460px;
+}
+@media (max-width: 768px) {
+    /* Media (image) and caption were both flex items in a row, competing
+       for width once caption left static in-flow — stack them instead. */
+    .unyl-hero { display: block; min-height: 0; }
+    .unyl-hero__caption { position: static; padding: 32px 6vw 40px; }
+    .unyl-hero__caption-inner { width: 100%; }
+}
+
+/* ===== Heritage =====
+   Real production layout (.acol1/.acol2/.bcol/.bcol1 in html_version):
+   two columns, each stacking a tall (425px) and a short (280px) card,
+   crossed so the tall cards land on opposite rows — not a uniform grid. */
+.unyl-heritage { background: var(--unyl-bg); color: var(--unyl-text); padding: 90px 6vw 60px; }
+.unyl-heritage__title {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: clamp(1.8rem, 4vw, 48px);
+    line-height: 1.2;
+    text-align: center;
+    margin: 0 0 50px;
+}
+.unyl-heritage__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+.unyl-heritage__col { display: flex; flex-direction: column; gap: 24px; }
+.unyl-hcard {
+    position: relative;
+    display: block;
+    border-radius: 16px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    background-color: var(--unyl-card);
+    background-image: var(--bg-desktop);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+.unyl-hcard--lg { min-height: 425px; }
+.unyl-hcard--sm { min-height: 280px; }
+@media (max-width: 768px) {
+    .unyl-hcard { background-image: var(--bg-mobile, var(--bg-desktop)); }
+}
+.unyl-hcard--plain { display: flex; align-items: center; padding: 32px; box-sizing: border-box; }
+.unyl-hcard--plain .unyl-hcard__cap { max-width: none; padding: 0; }
+.unyl-hcard__cap {
+    position: relative;
+    height: 100%;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    max-width: 255px;
+}
+.unyl-hcard__cap h3 { font-family: var(--font-serif); font-size: clamp(1.4rem, 3vw, 36px); line-height: 1.2; font-weight: 400; margin: 0 0 6px; }
+.unyl-hcard__cap p { font-family: var(--font-sans); font-size: 18px; line-height: 1.4; color: rgba(242, 242, 242, 0.85); margin: 0 0 16px; }
+/* Figma spec (node 103:1931 "Brand Quote"): 36px Playfair Display, not body copy.
+   Selector needs to out-specificity ".unyl-hcard__cap p" above. */
+.unyl-hcard__cap p.unyl-hcard__lead { font-family: var(--font-serif); font-weight: 400; font-size: clamp(1.4rem, 3vw, 36px); line-height: 1.2; color: var(--unyl-text); margin: 0; max-width: none; }
+@media (max-width: 768px) {
+    /* Mobile Figma order is Big Items -> quote -> Brass -> Silver Jewelry,
+       not the desktop's two-column grouping — unwrap the column divs
+       (display:contents) and reorder the 4 cards directly. */
+    .unyl-heritage__grid { display: flex; flex-direction: column; gap: 24px; }
+    .unyl-heritage__col { display: contents; }
+    .unyl-hcard--big-items { order: 1; }
+    .unyl-hcard--quote { order: 2; }
+    .unyl-hcard--brass { order: 3; }
+    .unyl-hcard--jewelry { order: 4; }
+}
+
+/* ===== Timeline ===== */
+.unyl-timeline { background: var(--unyl-bg); color: var(--unyl-text); padding: 90px 0 60px; text-align: center; }
+.unyl-timeline__title { font-family: var(--font-serif); font-weight: 400; font-size: clamp(1.8rem, 4vw, 48px); line-height: 1.2; margin: 0 0 50px; padding: 0 6vw; }
+.unyl-timeline__stage { position: relative; width: 100%; min-height: 650px; overflow: hidden; }
+.unyl-timeline__bgimg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: grayscale(1); opacity: 0; transition: opacity 0.8s ease; }
+.unyl-timeline__bgimg.is-active { opacity: 1; }
+.unyl-timeline__overlay { position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.15) 45%, rgba(0, 0, 0, 0.1) 100%); }
+.unyl-timeline__row {
+    position: absolute;
+    z-index: 2;
+    left: 0; right: 0; bottom: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 48px 6vw 40px;
+    text-align: left;
+    box-sizing: border-box;
+}
+.unyl-timeline__item {
+    background: none;
+    border: none;
+    color: inherit;
+    text-align: left;
+    display: flex;
+    cursor: pointer;
+    padding: 0;
+    font: inherit;
+    transition: opacity .3s ease;
+    flex-direction: column;
+    justify-content: start;
+}
+.unyl-timeline__range { display: block; font-family: var(--font-sans); font-size: 18px; color: rgba(242, 242, 242, 0.75); margin-bottom: 8px; }
+.unyl-timeline__era { display: block; font-family: var(--font-serif); font-weight: 400; font-size: clamp(1.3rem, 2.6vw, 36px); line-height: 1.2; margin-bottom: 16px; }
+.unyl-timeline__base { display: block; height: 4px; border-radius: 2px; background: rgba(217, 217, 217, 0.35); overflow: hidden; }
+.unyl-timeline__base span { display: block; height: 100%; width: 0%; background: #d9d9d9; }
+.unyl-timeline__item.is-active .unyl-timeline__base span.is-filling {
+    animation: unylFillBar linear forwards;
+    animation-duration: var(--unyl-duration, 5000ms);
+}
+.unyl-timeline__item.is-done .unyl-timeline__base span { width: 100%; }
+@keyframes unylFillBar { from { width: 0%; } to { width: 100%; } }
+.unyl-timeline__item:not(.is-active) { opacity: 0.55; }
+.unyl-timeline__caption { display: none; margin: 24px 0 0; font-family: var(--font-sans); font-size: 18px; line-height: 1.7; color: rgba(242, 242, 242, 0.85); }
+.unyl-timeline__item.is-active .unyl-timeline__caption { display: block; }
+@media (max-width: 768px) {
+    .unyl-timeline__stage { min-height: 520px; }
+    .unyl-timeline__row { grid-template-columns: 1fr 1fr; gap: 24px; padding: 32px 20px; }
+}
+
+/* ===== Statement ===== */
+.unyl-statement { background: var(--unyl-bg); color: var(--unyl-text); padding: 60px 6vw; display: flex; align-items: center; justify-content: center; gap: 24px; text-align: center; }
+.unyl-statement__mark {
+    width: 190px;
+    height: auto;
+    flex-shrink: 0;
+    opacity: .85;
+}
+.unyl-statement__text { font-family: var(--font-serif); font-weight: 400; font-size: clamp(1.6rem, 4vw, 48px); line-height: 1.2; max-width: 900px; margin: 0; }
+@media (max-width: 640px) {
+    .unyl-statement { flex-direction: column; gap: 16px; }
+}
+
+/* ===== Jewelry CTA ===== */
+.unyl-jewelry-cta { background: var(--unyl-bg); color: var(--unyl-text); display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 50px; padding: 80px 6vw; }
+.unyl-jewelry-cta__media img { width: 100%; display: block; border-radius: 16px; object-fit: cover; }
+.unyl-jewelry-cta__text h2 { font-family: var(--font-serif); font-weight: 400; font-size: clamp(1.8rem, 4vw, 48px); line-height: 1.2; margin: 0 0 20px; }
+.unyl-jewelry-cta__text p { font-family: var(--font-sans); font-size: 18px; line-height: 1.8; color: rgba(242, 242, 242, 0.75); margin: 0 0 30px; max-width: 420px; }
+@media (max-width: 768px) {
+    .unyl-jewelry-cta { grid-template-columns: 1fr; gap: 30px; }
+}
+
+/* ===== Gallery CTA =====
+   Real production layout: side-by-side 50/50 (text+buttons left, large
+   image right) — not a stacked image-then-centered-text block. */
+.unyl-gallery-cta {
+    background: var(--unyl-bg);
+    color: var(--unyl-text);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 50px;
+    padding: 80px 6vw;
+}
+.unyl-gallery-cta__media img { width: 100%; display: block; border-radius: 16px; object-fit: cover; }
+.unyl-gallery-cta__text h2 { font-family: var(--font-serif); font-weight: 400; font-size: clamp(1.8rem, 4vw, 48px); line-height: 1.2; margin: 0 0 20px; }
+.unyl-gallery-cta__text p { font-family: var(--font-sans); font-size: 18px; line-height: 1.8; color: rgba(242, 242, 242, 0.75); margin: 0 0 30px; }
+.unyl-gallery-cta__actions { display: flex; gap: 20px; flex-wrap: wrap; }
+.unyl-divider--left { text-align: left; margin-top: 40px; }
+.unyl-divider--left img { height: 24px; }
+@media (max-width: 768px) {
+    .unyl-gallery-cta { grid-template-columns: 1fr; gap: 30px; }
+    .unyl-gallery-cta__media { order: -1; }
+}
+
+/* ===== Craft story =====
+   Real production layout (#aoph-row in html_version): two side-by-side
+   cards, each a rounded #1A1A1A panel with heading+text on top and an
+   image bleeding edge-to-edge at the bottom — not stacked full-width rows. */
+.unyl-craft { background: var(--unyl-bg); color: var(--unyl-text); padding: 90px 6vw; }
+.unyl-craft__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+.unyl-craft__card {
+    background: var(--unyl-card);
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+.unyl-craft__card-text { padding: 30px 30px 10px; }
+.unyl-craft__card img { width: 100%; display: block; object-fit: cover; }
+/* Figma spec (node 103:2216 "Frame 68"): this card's image is inset,
+   not edge-to-edge like the first card's. */
+.unyl-craft__card img.unyl-craft__img--inset {
+    width: 100%;
+    margin: 20px auto;
+    border-radius: 8px;
+}
+.unyl-craft__card h2 {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    /* Figma spec (nodes 103:2209/103:2214): 36px. */
+    font-size: clamp(1.5rem, 3vw, 36px);
+    line-height: 1.2;
+    margin: 0 0 12px;
+}
+.unyl-craft__card p { font-family: var(--font-sans); font-size: 18px; line-height: 1.7; color: rgba(242, 242, 242, 0.75); margin: 0; }
+.unyl-craft__note { padding: 20px 30px 0; margin: 0; font-family: var(--font-sans); font-size: 0.8rem; color: rgba(242, 242, 242, 0.5); }
+@media (max-width: 768px) {
+    .unyl-craft__grid { grid-template-columns: 1fr; }
+}
+
+/* ===== Workshop + founder quote ===== */
+.unyl-workshop { background: var(--unyl-bg); color: var(--unyl-text); padding: 80px 0; }
+.unyl-workshop__media { position: relative; max-width: 100%; margin: 0 auto; }
+/* Scoped to the direct picture> child only — .unyl-workshop__card (with its
+   own icon <img>s) also lives inside .unyl-workshop__media, and a bare
+   descendant "img" selector here would incorrectly win over .unyl-workshop__icon. */
+.unyl-workshop__media > picture { display: block; }
+.unyl-workshop__media > picture img { width: 100%; border-radius: 0; display: block; object-fit: contain; }
+.unyl-workshop__card { position: absolute; left: 40px; bottom: 40px; max-width: 420px; border-radius: 16px; }
+.unyl-workshop__card h2 {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    /* Figma spec (node 103:1954 "Workshop CTA Section" title): 48px. */
+    font-size: clamp(1.8rem, 4vw, 48px);
+    line-height: 1.2;
+    margin: 0 0 22px;
+}
+.unyl-workshop__list {
+    list-style: none;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    background: var(--unyl-card);
+    padding: 0px;
+    border-radius: 16px;
+}.unyl-workshop__list li { display: flex; align-items: flex-start; gap: 14px; padding: 20px;border-bottom: 1px solid #FFFFFF1A }
+/* flex-basis:auto sizes to the unwrapped paragraph's full width, which is huge —
+   flex:1 makes this column fill the remaining row space directly instead of
+   shrinking from that huge basis (which, combined with min-width:0, collapsed
+   it to 0 rather than wrapping). */
+.unyl-workshop__list li > div { flex: 1; min-width: 0; }
+.unyl-workshop__icon { width: 28px; height: 28px; flex-shrink: 0; object-fit: contain; }
+.unyl-workshop__list h3 { font-family: var(--font-serif); font-size: 28px; line-height: 1.2; font-weight: 400; margin: 0 0 4px; }
+.unyl-workshop__list p { font-family: var(--font-sans); font-size: 18px; line-height: 1.5; color: rgba(242, 242, 242, 0.65); margin: 0; }
+.unyl-quote { max-width: 700px; margin: 80px auto 0; text-align: center; padding-bottom: 90px; }
+.unyl-quote__mark { width: 32px; opacity: 0.8; margin-bottom: 20px; }
+.unyl-quote__text { font-family: var(--font-serif); font-size: clamp(1.6rem, 4vw, 48px); line-height: 1.2; margin: 0 0 30px; }
+.unyl-quote__author { display: flex; align-items: center; justify-content: center; gap: 14px; }
+.unyl-quote__avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; }
+.unyl-quote__author div { display: flex; flex-direction: column; text-align: left; }
+.unyl-quote__name { font-family: var(--font-serif); font-size: 28px; line-height: 1.2; }
+.unyl-quote__role { font-family: var(--font-sans); font-size: 18px; color: rgba(242, 242, 242, 0.6); }
+@media (max-width: 768px) {
+    .unyl-workshop__card { position: static; max-width: 100%; margin-top: 20px; box-sizing: border-box; }
+    .unyl-workshop__list h3 { font-size: 22px; }
+}
+
+/* ===== Popular products section wrapper (slider itself is in slider.css) ===== */
+.unyl-popular { background: var(--unyl-bg); color: var(--unyl-text); padding: 90px 6vw; }

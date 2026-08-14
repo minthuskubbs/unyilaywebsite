@@ -1,0 +1,84 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Karla:wght@400;500;600&display=swap');
+
+:root {
+    --unyl-bg: #10100f;
+    --unyl-card: #1a1a1a;
+    --unyl-text: #f2f2f2;
+    --unyl-text-dim: rgba(242, 242, 242, 0.75);
+    --unyl-text-faint: rgba(242, 242, 242, 0.5);
+    --unyl-btn-bg: #dddddd;
+    --unyl-btn-text: #0d0d0c;
+    --font-serif: 'Playfair Display', serif;
+    --font-sans: 'Karla', sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    background: var(--unyl-bg);
+    color: var(--unyl-text);
+    font-family: var(--font-sans);
+}
+
+/* Product detail pages use a distinct pure-black theme in the real site
+   (confirmed via the WP export's customizer CSS: html/#main background
+   #000000, not the homepage's #10100F) — no card backgrounds around
+   product content either. */
+body.theme-product { background: #000000; }
+
+/* White theme for the Jewelry category-index page (per client direction —
+   a light catalog page rather than the site's usual dark background). The
+   floating dark header/footer stay as-is, sitting on top of the light body. */
+body.theme-light { background: #ffffff; color: #1a1a1a; }
+body.theme-light .unyl-breadcrumb { color: rgba(26, 26, 26, 0.55); }
+body.theme-light .unyl-breadcrumb__current,
+body.theme-light .unyl-breadcrumb a:hover { color: #1a1a1a; }
+body.theme-light .unyl-shop__title { color: #1a1a1a; }
+
+img { max-width: 100%; }
+
+.unyl-btn {
+    display: inline-block;
+    font-family: var(--font-sans);
+    font-size: 18px;
+    color: var(--unyl-btn-text);
+    text-decoration: none;
+    background: var(--unyl-btn-bg);
+    border: none;
+    border-radius: 999px;
+    padding: 20px 24px;
+    transition: opacity .25s ease;
+    cursor: pointer;
+    min-width: 160px;
+    text-align: center;
+    height: 63px;
+    margin-bottom: 20px;
+}
+.unyl-btn:hover { opacity: 0.85; }
+.unyl-btn--sm { padding: 12px 20px; }
+.unyl-btn--dark { background: var(--unyl-card); color: #fafafa; }
+
+.unyl-divider {
+    text-align: center;
+    margin-top: 60px;
+}
+.unyl-divider img { height: 70px; opacity: 0.85; }
+
+.unyl-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 6vw;
+}
+
+/* Scroll-in reveal for homepage sections — class added by scroll-reveal.js
+   only once JS has actually run, so content never gets stuck invisible. */
+.unyl-reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.unyl-reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}

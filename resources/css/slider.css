@@ -1,0 +1,59 @@
+/* ===== Generic product slider =====
+   Shared by the homepage "Popular Products" carousel and the product
+   detail page's "Related products" — same mechanics (slider.js), only
+   the caption (title/price) is optional per usage via :show-caption. */
+.unyl-slider__title {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: clamp(1.8rem, 4vw, 48px);
+    line-height: 1.2;
+    text-align: center;
+    margin: 0 0 50px;
+    color: var(--unyl-text);
+}
+.unyl-slider__stage { position: relative; max-width: 1400px; margin: 0 auto; }
+.unyl-slider__viewport { overflow: hidden; }
+.unyl-slider__track { display: flex; }
+.unyl-slider__slide { flex-shrink: 0; display: block; text-decoration: none; color: inherit; }
+.unyl-slider__slide-image {
+    background: var(--unyl-card);
+    border-radius: 16px;
+    overflow: hidden;
+    aspect-ratio: 1 / 1;
+}
+.unyl-slider__slide-image img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.35s ease; }
+.unyl-slider__slide:hover .unyl-slider__slide-image img { transform: scale(1.05); }
+.unyl-slider__slide-title {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    color: var(--unyl-text);
+    margin: 14px 0 4px;
+    line-height: 1.4;
+}
+.unyl-slider__slide-price { font-family: var(--font-sans); font-size: 14px; color: rgba(242, 242, 242, 0.6); margin: 0; }
+
+.unyl-slider-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid rgba(242, 242, 242, 0.5);
+    background: rgba(16, 16, 15, 0.6);
+    color: var(--unyl-text);
+    font-size: 1.2rem;
+    cursor: pointer;
+    line-height: 1;
+}
+.unyl-slider-arrow:hover { background: var(--unyl-text); color: var(--unyl-bg); }
+.unyl-slider-arrow.prev { left: -20px; }
+.unyl-slider-arrow.next { right: -20px; }
+.unyl-slider-dots { display: flex; justify-content: center; gap: 10px; margin-top: 30px; }
+.unyl-slider-dots button { width: 8px; height: 8px; border-radius: 50%; border: none; background: rgba(242, 242, 242, 0.35); cursor: pointer; padding: 0; }
+.unyl-slider-dots button.active { background: var(--unyl-text); }
+@media (max-width: 900px) {
+    .unyl-slider-arrow.prev { left: 4px; }
+    .unyl-slider-arrow.next { right: 4px; }
+}
