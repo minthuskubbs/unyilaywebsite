@@ -1,5 +1,6 @@
-/* TEMPORARY: add-to-cart button hidden per client request — remove this block to restore. */
-#addToCartBtn { display: none !important; }
+/* TEMPORARY: add-to-cart button/qty stepper hidden per client request — remove this block to restore. */
+#addToCartBtn,
+.unyl-qty { display: none !important; }
 
 /* ===== Product detail ===== */
 .unyl-product { padding: 130px 6vw 100px; max-width: 1300px; margin: 0 auto; }
