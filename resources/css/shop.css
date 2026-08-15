@@ -94,7 +94,7 @@
 body.theme-light .unyl-pcard__image { background: #f7f7f7; border: 1px solid rgba(0, 0, 0, 0.08); }
 body.theme-light .unyl-pcard__title { color: #1a1a1a; }
 body.theme-light .unyl-pcard__price { color: rgba(26, 26, 26, 0.6); }
-body.theme-light .unyl-shop-sidebar__card { background: #f7f7f7; border: 1px solid rgba(0, 0, 0, 0.08); }
+body.theme-light .unyl-shop-sidebar__card { background: none; border: 0px; }
 body.theme-light .unyl-shop-sidebar__list a { color: rgba(26, 26, 26, 0.7); }
 body.theme-light .unyl-shop-sidebar__list a:hover { background: rgba(0, 0, 0, 0.05); color: #1a1a1a; }
 body.theme-light .unyl-shop-sidebar__list > li.is-active > a { background: #1a1a1a; color: #ffffff; }
