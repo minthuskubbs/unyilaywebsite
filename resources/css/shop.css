@@ -23,18 +23,21 @@
 
 .unyl-shop-sidebar { position: sticky; top: 100px; }
 .unyl-shop-sidebar__card {
-    background: var(--unyl-card);
-    border-radius: 16px;
-    padding: 24px;
+    background: var(--unyl-bg);
+    padding: 24px 24px 24px 0;
     max-height: calc(100vh - 140px);
     overflow-y: auto;
 }
+.unyl-shop-sidebar__mobile-header { display: flex; align-items: center; justify-content: space-between; margin: 0 0 12px; }
 .unyl-shop-sidebar__title {
     font-family: var(--font-serif);
     font-weight: 400;
     font-size: 20px;
-    margin: 0 0 12px;
+    margin: 0;
 }
+.unyl-shop-sidebar__mobile-trigger,
+.unyl-shop-sidebar__backdrop,
+.unyl-shop-sidebar__close { display: none; }
 .unyl-shop-sidebar__list, .unyl-shop-sidebar__list ul { list-style: none; margin: 0; padding: 0; }
 .unyl-shop-sidebar__list > li { margin-bottom: 2px; }
 .unyl-shop-sidebar__list a {
@@ -70,7 +73,7 @@
 }
 .unyl-pcard { display: block; text-decoration: none; color: inherit; }
 .unyl-pcard__image {
-    background: var(--unyl-card);
+    background: var(--unyl-bg);
     border-radius: 16px;
     aspect-ratio: 1 / 1;
     overflow: hidden;
@@ -84,8 +87,9 @@
     color: var(--unyl-text);
     margin: 0 0 6px;
     line-height: 1.4;
+    text-align: center;
 }
-.unyl-pcard__price { font-family: var(--font-sans); font-size: 14px; color: rgba(242, 242, 242, 0.6); margin: 0; }
+.unyl-pcard__price { font-family: var(--font-sans); font-size: 14px; color: rgba(242, 242, 242, 0.6); margin: 0; text-align: center; }
 
 body.theme-light .unyl-pcard__image { background: #f7f7f7; border: 1px solid rgba(0, 0, 0, 0.08); }
 body.theme-light .unyl-pcard__title { color: #1a1a1a; }
@@ -150,10 +154,55 @@ body.theme-light .unyl-category-tile__caption { color: #1a1a1a; }
 
 @media (max-width: 900px) {
     .unyl-shop__layout { grid-template-columns: 1fr; }
-    .unyl-shop-sidebar { position: static; }
     .unyl-shop__grid { grid-template-columns: repeat(2, 1fr); }
     .unyl-category-tiles { grid-template-columns: repeat(2, 1fr); }
+
+    /* Sidebar becomes a left-sliding drawer instead of an always-visible
+       inline block, so the product grid isn't pushed far down the page. */
+    .unyl-shop-sidebar__mobile-trigger {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 24px;
+        padding: 12px 18px;
+        border-radius: 999px;
+        border: 1px solid rgba(242, 242, 242, 0.2);
+        background: none;
+        color: var(--unyl-text);
+        font-family: var(--font-sans);
+        font-size: 14px;
+        cursor: pointer;
+    }
+    .unyl-shop-sidebar__mobile-trigger svg { width: 18px; height: 18px; }
+    .unyl-shop-sidebar__backdrop {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 399;
+        background: rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .unyl-shop-sidebar__backdrop.is-open { opacity: 1; visibility: visible; }
+    .unyl-shop-sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 85%;
+        max-width: 340px;
+        z-index: 400;
+        background: var(--unyl-bg);
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        overflow-y: auto;
+    }
+    .unyl-shop-sidebar.is-open { transform: translateX(0); }
+    .unyl-shop-sidebar__card { max-height: none; padding: 24px; }
+    .unyl-shop-sidebar__close { display: block; background: none; border: none; color: var(--unyl-text); font-size: 26px; line-height: 1; cursor: pointer; }
 }
+body.theme-light .unyl-shop-sidebar__mobile-trigger { border-color: rgba(0, 0, 0, 0.15); color: #1a1a1a; }
 @media (max-width: 500px) {
     .unyl-shop__grid { grid-template-columns: 1fr 1fr; gap: 14px; }
 }

@@ -16,7 +16,7 @@
 .unyl-slider__track { display: flex; }
 .unyl-slider__slide { flex-shrink: 0; display: block; text-decoration: none; color: inherit; }
 .unyl-slider__slide-image {
-    background: var(--unyl-card);
+    background: var(--unyl-bg);
     border-radius: 16px;
     overflow: hidden;
     aspect-ratio: 1 / 1;
@@ -29,8 +29,9 @@
     color: var(--unyl-text);
     margin: 14px 0 4px;
     line-height: 1.4;
+    text-align: center;
 }
-.unyl-slider__slide-price { font-family: var(--font-sans); font-size: 14px; color: rgba(242, 242, 242, 0.6); margin: 0; }
+.unyl-slider__slide-price { font-family: var(--font-sans); font-size: 14px; color: rgba(242, 242, 242, 0.6); margin: 0; text-align: center; }
 
 .unyl-slider-arrow {
     position: absolute;

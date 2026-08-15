@@ -214,7 +214,17 @@ class ProductService
             ->get(['post_id', 'meta_key', 'meta_value'])
             ->groupBy('post_id');
 
-        return $variations->map(function ($v) use ($meta) {
+        // Variations only sometimes have their own distinct image (WooCommerce
+        // stores it as a normal _thumbnail_id on the variation post) — most
+        // fall back to the parent product's gallery instead.
+        $thumbIds = $meta->map(fn ($rows) => (int) $rows->firstWhere('meta_key', '_thumbnail_id')?->meta_value)
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+        $variationImages = $this->images->urlsForAttachments($thumbIds);
+
+        return $variations->map(function ($v) use ($meta, $variationImages) {
             $rows = $meta->get($v->ID, collect())->pluck('meta_value', 'meta_key');
             $attributes = [];
 
@@ -224,11 +234,14 @@ class ProductService
                 }
             }
 
+            $thumbId = (int) $rows->get('_thumbnail_id', 0);
+
             return [
                 'id' => $v->ID,
                 'price' => $rows->get('_price', $rows->get('_regular_price')),
                 'stock_status' => $rows->get('_stock_status', 'instock'),
                 'attributes' => $attributes,
+                'image' => $thumbId ? ($variationImages[$thumbId] ?? null) : null,
             ];
         })->all();
     }
@@ -377,7 +390,7 @@ class ProductService
      * @param  int|int[]|null  $categoryId  A single category, a set of categories
      *      (e.g. the "Big Items" bucket), or null for genuinely every product.
      */
-    public function paginate(int|array|null $categoryId, int $page = 1, int $perPage = 12): array
+    public function paginate(int|array|null $categoryId, int $page = 1, int $perPage = 12, ?string $search = null): array
     {
         $query = DB::connection('wordpress')
             ->table('posts as p')
@@ -393,6 +406,10 @@ class ProductService
                     ->whereIn('tt.term_id', $categoryIds)
                     ->where('tt.taxonomy', 'product_cat');
             });
+        }
+
+        if ($search !== null && $search !== '') {
+            $query->where('p.post_title', 'like', '%' . str_replace(['%', '_'], ['\\%', '\\_'], $search) . '%');
         }
 
         $total = (clone $query)->count();
@@ -425,6 +442,83 @@ class ProductService
             'currentPage' => $page,
             'lastPage' => max(1, (int) ceil($total / $perPage)),
         ];
+    }
+
+    /**
+     * Live-search preview: a handful of matching products (name + image +
+     * price) for the header search dropdown, as the user types.
+     */
+    public function search(string $term, int $limit = 6): array
+    {
+        $term = trim($term);
+        if ($term === '') {
+            return [];
+        }
+
+        $rows = DB::connection('wordpress')
+            ->table('posts as p')
+            ->where('p.post_type', 'product')
+            ->where('p.post_status', 'publish')
+            ->where('p.post_title', 'like', '%' . str_replace(['%', '_'], ['\\%', '\\_'], $term) . '%')
+            ->select('p.ID', 'p.post_title', 'p.post_name')
+            ->orderBy('p.post_title')
+            ->limit($limit)
+            ->get();
+
+        $ids = $rows->pluck('ID')->all();
+        $images = $this->images->urlsForProducts($ids);
+        $typeMap = $this->productTypes($ids);
+        $priceMap = $this->priceRanges($ids, $typeMap);
+
+        return $rows->map(fn ($row) => [
+            'id' => $row->ID,
+            'name' => $row->post_title,
+            'slug' => $row->post_name,
+            'image' => $images[$row->ID] ?? null,
+            'price' => $priceMap[$row->ID] ?? null,
+        ])->all();
+    }
+
+    /**
+     * Resolves a set of product IDs (e.g. from the wishlist session) into
+     * display data, preserving the given order and silently dropping any
+     * that no longer exist / aren't published.
+     */
+    public function productsByIds(array $productIds): array
+    {
+        if (empty($productIds)) {
+            return [];
+        }
+
+        $rows = DB::connection('wordpress')
+            ->table('posts')
+            ->whereIn('ID', $productIds)
+            ->where('post_type', 'product')
+            ->where('post_status', 'publish')
+            ->select('ID', 'post_title', 'post_name')
+            ->get()
+            ->keyBy('ID');
+
+        $ids = array_values(array_intersect($productIds, $rows->keys()->all()));
+        $images = $this->images->urlsForProducts($ids);
+        $typeMap = $this->productTypes($ids);
+        $priceMap = $this->priceRanges($ids, $typeMap);
+
+        return array_values(array_filter(array_map(function ($id) use ($rows, $images, $typeMap, $priceMap) {
+            $row = $rows->get($id);
+            if (!$row) {
+                return null;
+            }
+
+            return [
+                'id' => $row->ID,
+                'name' => $row->post_title,
+                'slug' => $row->post_name,
+                'image' => $images[$row->ID] ?? null,
+                'type' => $typeMap[$row->ID] ?? 'simple',
+                'price' => $priceMap[$row->ID] ?? null,
+            ];
+        }, $productIds)));
     }
 
     /** @return array<int, string> product_id => 'simple'|'variable' etc. */

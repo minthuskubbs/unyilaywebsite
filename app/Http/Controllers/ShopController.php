@@ -21,16 +21,39 @@ class ShopController extends Controller
      */
     public function index(Request $request)
     {
+        $search = trim((string) $request->query('s', ''));
         $page = max(1, (int) $request->query('product-page', 1));
-        $listing = $this->products->paginate($this->categories->bigItemsCategoryIds(), $page);
+
+        // A search covers the whole catalog (including jewelry); without a
+        // search term this stays the "Big Items" bucket as before.
+        $listing = $search !== ''
+            ? $this->products->paginate(null, $page, search: $search)
+            : $this->products->paginate($this->categories->bigItemsCategoryIds(), $page);
 
         return view('shop.archive', [
             'categories' => $this->categories->megaMenuGroups(),
             'sidebar' => $this->categories->sidebarTree(),
             'breadcrumbs' => [],
-            'title' => 'Big Items',
+            'title' => $search !== '' ? 'Search results for "' . $search . '"' : 'Big Items',
             'listing' => $listing,
-            'baseUrl' => url('/shop'),
+            'baseUrl' => url('/shop') . ($search !== '' ? '?s=' . urlencode($search) : ''),
+            'search' => $search,
+        ]);
+    }
+
+    /** GET /search — live-search JSON for the header search dropdown. */
+    public function search(Request $request)
+    {
+        $term = trim((string) $request->query('q', ''));
+        $results = $term !== '' ? $this->products->search($term) : [];
+
+        return response()->json([
+            'results' => array_map(fn ($p) => [
+                'name' => $p['name'],
+                'url' => url('/product/' . $p['slug']),
+                'image' => $p['image'],
+                'price' => \App\Support\Money::range($p['price']),
+            ], $results),
         ]);
     }
 

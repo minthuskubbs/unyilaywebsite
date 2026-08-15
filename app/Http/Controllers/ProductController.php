@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Services\CategoryService;
 use App\Services\ProductService;
+use App\Services\SizeChartService;
 
 class ProductController extends Controller
 {
     public function __construct(
         private ProductService $products,
         private CategoryService $categories,
+        private SizeChartService $sizeCharts,
     ) {
     }
 
@@ -33,12 +35,15 @@ class ProductController extends Controller
         $isJewelry = collect($product['categories'])
             ->contains(fn ($cat) => $this->categories->isJewelryCategory($cat['term_id']));
 
+        $sizeCharts = $isJewelry ? $this->sizeCharts->chartsForProduct($product['id']) : [];
+
         return view('shop.product', [
             'categories' => $this->categories->megaMenuGroups(),
             'product' => $product,
             'breadcrumbs' => $breadcrumbs,
             'related' => $related,
             'isJewelry' => $isJewelry,
+            'sizeCharts' => $sizeCharts,
         ]);
     }
 }

@@ -44,6 +44,8 @@ function initVariations() {
     const variationIdInput = document.getElementById('variationIdInput');
     const addToCartBtn = document.getElementById('addToCartBtn');
     const basePrice = priceEl ? priceEl.textContent : '';
+    const mainImg = document.getElementById('productMainImageTag');
+    const defaultImage = mainImg ? mainImg.src : null;
 
     function currentSelection() {
         const selection = {};
@@ -76,6 +78,7 @@ function initVariations() {
             variationIdInput.value = '0';
             if (addToCartBtn) addToCartBtn.disabled = true;
             if (priceEl) priceEl.textContent = basePrice;
+            if (mainImg && defaultImage) mainImg.src = defaultImage;
             return;
         }
 
@@ -90,6 +93,7 @@ function initVariations() {
         variationIdInput.value = match.id;
         if (addToCartBtn) addToCartBtn.disabled = match.stock_status !== 'instock';
         if (priceEl) priceEl.textContent = match.stock_status === 'instock' ? formatPrice(match.price) : 'Out of stock';
+        if (mainImg) mainImg.src = match.image || defaultImage;
     }
 
     selects.forEach((select) => select.addEventListener('change', update));

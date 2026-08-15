@@ -9,7 +9,13 @@
 
             <div class="unyl-shop__main">
                 @if (empty($listing['items']))
-                    <p class="unyl-shop__empty">No products found in this category yet.</p>
+                    <p class="unyl-shop__empty">
+                        @if (!empty($search))
+                            No products found for "{{ $search }}".
+                        @else
+                            No products found in this category yet.
+                        @endif
+                    </p>
                 @else
                     <div class="unyl-shop__grid">
                         @foreach ($listing['items'] as $product)

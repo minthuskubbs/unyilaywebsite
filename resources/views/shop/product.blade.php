@@ -27,6 +27,111 @@
 
                 <p class="unyl-product__price" id="productPrice">{{ \App\Support\Money::range($product['price']) }}</p>
 
+                @if (($isJewelry ?? false) && !empty($sizeCharts))
+                    @foreach ($sizeCharts as $chart)
+                        <div class="unyl-popup-trigger-wrap">
+                            <button type="button" class="unyl-popup-trigger" data-modal-trigger="sizeChart{{ $chart['id'] }}">{{ $chart['button_text'] }}</button>
+                        </div>
+
+                        <div class="unyl-popup-modal" id="sizeChart{{ $chart['id'] }}">
+                            <div class="unyl-popup-modal__overlay" data-modal-close></div>
+                            <div class="unyl-popup-modal__panel">
+                                <div class="unyl-popup-modal__header">
+                                    <h3>{{ $chart['title'] }}</h3>
+                                    <button type="button" class="unyl-popup-modal__close" data-modal-close aria-label="Close">&times;</button>
+                                </div>
+
+                                @if (!empty($chart['table']) && $chart['content'] !== '')
+                                    <div class="unyl-popup-modal__tabs">
+                                        <button type="button" class="unyl-popup-tab is-active" data-tab-trigger="chart" data-tab-group="sizeChart{{ $chart['id'] }}">{{ $chart['tab_title'] }}</button>
+                                        <button type="button" class="unyl-popup-tab" data-tab-trigger="desc" data-tab-group="sizeChart{{ $chart['id'] }}">{{ $chart['desc_tab_title'] }}</button>
+                                    </div>
+                                @endif
+
+                                <div class="unyl-popup-modal__body">
+                                    @if (!empty($chart['table']))
+                                        <div class="unyl-popup-tab-panel is-active" data-tab-panel="chart" data-tab-group="sizeChart{{ $chart['id'] }}">
+                                            <div class="unyl-popup-table-scroll">
+                                                <table class="unyl-popup-table">
+                                                    <thead>
+                                                        <tr>
+                                                            @foreach ($chart['table'][0] as $cell)
+                                                                <th>{{ $cell }}</th>
+                                                            @endforeach
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (array_slice($chart['table'], 1) as $row)
+                                                            <tr>
+                                                                @foreach ($row as $cell)
+                                                                    <td>{{ $cell }}</td>
+                                                                @endforeach
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    @endif
+
+                                    @if ($chart['content'] !== '')
+                                        <div class="unyl-popup-tab-panel {{ empty($chart['table']) ? 'is-active' : '' }}" data-tab-panel="desc" data-tab-group="sizeChart{{ $chart['id'] }}">
+                                            <div class="unyl-popup-richtext">{!! $chart['content'] !!}</div>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                @endif
+
+                @if (!($isJewelry ?? false) && $product['type'] === 'variable' && count($product['variations']))
+                    <div class="unyl-popup-trigger-wrap">
+                        <button type="button" class="unyl-popup-trigger" data-modal-trigger="priceChartsModal">Price Charts</button>
+                    </div>
+
+                    <div class="unyl-popup-modal" id="priceChartsModal">
+                        <div class="unyl-popup-modal__overlay" data-modal-close></div>
+                        <div class="unyl-popup-modal__panel">
+                            <div class="unyl-popup-modal__header">
+                                <h3>Price Charts</h3>
+                                <button type="button" class="unyl-popup-modal__close" data-modal-close aria-label="Close">&times;</button>
+                            </div>
+                            <div class="unyl-popup-modal__body">
+                                <div class="unyl-popup-table-scroll">
+                                    <table class="unyl-popup-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Price</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($product['variations'] as $variation)
+                                                @php
+                                                    $parts = [];
+                                                    foreach ($variation['attributes'] as $taxonomy => $value) {
+                                                        if ($value === '') continue;
+                                                        $label = trim(str_replace(['pa_', '-', '_'], ['', ' ', ' '], strtolower($taxonomy)));
+                                                        $parts[] = $label . ': ' . $value;
+                                                    }
+                                                    $rowName = implode(', ', $parts);
+                                                @endphp
+                                                @if ($rowName !== '')
+                                                    <tr>
+                                                        <td>{{ $rowName }}</td>
+                                                        <td>{{ \App\Support\Money::format($variation['price']) }}</td>
+                                                    </tr>
+                                                @endif
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
                 @if ($product['short_description'])
                     <div class="unyl-product__short-desc">{!! nl2br(e(strip_tags($product['short_description']))) !!}</div>
                 @endif
@@ -54,7 +159,16 @@
                             <input type="number" class="unyl-qty__input" id="productQty" name="quantity" value="1" min="1" />
                             <button type="button" class="unyl-qty__btn" data-action="plus" aria-label="Increase quantity">+</button>
                         </div>
-                        <button type="submit" class="unyl-btn" id="addToCartBtn" {{ $product['type'] === 'variable' ? 'disabled' : '' }}>Add to cart</button>
+                        <button type="submit" class="unyl-medium-btn" id="addToCartBtn" {{ $product['type'] === 'variable' ? 'disabled' : '' }}>Add to cart</button>
+                        <button
+                            type="button"
+                            class="unyl-product__wishlist {{ app(\App\Services\WishlistService::class)->has($product['id']) ? 'is-active' : '' }}"
+                            data-wishlist-toggle
+                            data-product-id="{{ $product['id'] }}"
+                            aria-label="Add to wishlist"
+                        >
+                            <svg viewBox="0 0 21 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3806 17.7283L2.22677 10.6088C-2.20469 6.3371 4.30956 -1.86456 10.3806 4.77081C16.4518 -1.86456 22.9365 6.36558 18.5345 10.6088L10.3806 17.7283Z"/></svg>
+                        </button>
                     </div>
 
                     <input type="hidden" name="product_id" value="{{ $product['id'] }}" />

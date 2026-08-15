@@ -61,6 +61,10 @@ class CheckoutController extends Controller
             'payment_method' => 'cod',
             'payment_method_title' => 'Cash on Delivery',
             'set_paid' => false,
+            // Tie the order to their WordPress account (if logged in via
+            // our /login) so it shows up both in wp-admin and their own
+            // "My Account" order history here — guest checkout otherwise.
+            'customer_id' => $request->session()->get('customer.id', 0),
             'billing' => [
                 'first_name' => $validated['billing_first_name'],
                 'last_name' => $validated['billing_last_name'],

@@ -90,11 +90,6 @@
                         <span>Cash on delivery</span>
                         <small>Pay with cash upon delivery.</small>
                     </label>
-                    <label class="unyl-checkout__payment-option is-disabled">
-                        <input type="radio" name="payment_method" value="dinger" disabled />
-                        <span>Online Payment (Dinger) — coming soon</span>
-                        <small>KBZ Pay, AYA Pay, Wave Pay and more.</small>
-                    </label>
                 </div>
 
                 <label class="unyl-checkout__terms">

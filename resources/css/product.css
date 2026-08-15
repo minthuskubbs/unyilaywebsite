@@ -1,3 +1,6 @@
+/* TEMPORARY: add-to-cart button hidden per client request — remove this block to restore. */
+#addToCartBtn { display: none !important; }
+
 /* ===== Product detail ===== */
 .unyl-product { padding: 130px 6vw 100px; max-width: 1300px; margin: 0 auto; }
 .unyl-product__layout {
@@ -9,7 +12,7 @@
 
 .unyl-product__main-image {
     aspect-ratio: 1 / 1;
-    background: #0a0a0a;
+    background: var(--unyl-bg);
     border-radius: 8px;
     overflow: hidden;
 }
@@ -23,7 +26,7 @@
     border: 1px solid rgba(242, 242, 242, 0.15);
     border-radius: 6px;
     overflow: hidden;
-    background: #0a0a0a;
+    background: var(--unyl-bg);
     cursor: pointer;
 }
 .unyl-product__thumb.is-active { border-color: var(--unyl-text); }
@@ -105,6 +108,24 @@
 }
 #addToCartBtn:disabled { opacity: 0.4; cursor: not-allowed; }
 
+.unyl-product__wishlist {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(242, 242, 242, 0.2);
+    background: none;
+    color: var(--unyl-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+.unyl-product__wishlist svg { width: 18px; height: 18px; }
+.unyl-product__wishlist:hover { background: #1a1a1a; }
+.unyl-product__wishlist.is-active { color: #e0475c; border-color: #e0475c; }
+.unyl-product__wishlist.is-active svg { fill: currentColor; }
+
 .unyl-product__meta {
     display: flex;
     flex-direction: column;
@@ -156,6 +177,9 @@ body.theme-light .unyl-qty { border-color: rgba(0, 0, 0, 0.15); }
 body.theme-light .unyl-qty__btn { color: #1a1a1a; }
 body.theme-light .unyl-qty__btn:hover { background: #f0f0f0; }
 body.theme-light .unyl-qty__input { color: #1a1a1a; border-left-color: rgba(0, 0, 0, 0.15); border-right-color: rgba(0, 0, 0, 0.15); }
+body.theme-light .unyl-product__wishlist { border-color: rgba(0, 0, 0, 0.15); color: #1a1a1a; }
+body.theme-light .unyl-product__wishlist:hover { background: #f0f0f0; }
+body.theme-light .unyl-product__wishlist.is-active { color: #e0475c; border-color: #e0475c; }
 body.theme-light .unyl-product__meta { color: rgba(26, 26, 26, 0.55); border-top-color: rgba(0, 0, 0, 0.1); }
 body.theme-light .unyl-product__meta a { color: rgba(26, 26, 26, 0.75); }
 body.theme-light .unyl-product__meta a:hover { color: #1a1a1a; }

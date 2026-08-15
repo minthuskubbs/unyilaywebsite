@@ -1,3 +1,7 @@
+/* TEMPORARY: cart icons hidden per client request — remove this block to restore. */
+.site-header__icons--cart,
+.unyl-mobile-cart-fab { display: none !important; }
+
 /* ============ Site header: floating rounded pill, 64px tall ============ */
 :root { --header-height: 64px; --header-gap: 20px; }
 
@@ -10,7 +14,7 @@
     height: var(--header-height);
     max-width: 1400px;
     margin: 0 auto;
-    background: rgba(20, 20, 20, 0.82);
+    background: rgba(22, 22, 22, 0.6);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(242, 242, 242, 0.08);
@@ -122,21 +126,75 @@
     :root { --header-gap: 14px; }
     .site-header__inner { padding: 0 10px 0 18px; }
     .site-header__nav { display: none; }
-    .site-header__icons > li:not(.site-header__icons--cart) { display: none; }
+    .site-header__icons > li:not(.site-header__icons--search) { display: none; }
+    .site-header__icons { margin-left: auto; gap: 14px; }
     .site-header__mobile-toggle { display: block; }
+}
+
+/* ============ Mobile floating cart button (chatbot-style bubble) ============ */
+.unyl-mobile-cart-fab {
+    display: none;
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 250;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(22, 22, 22, 0.9);
+    border: 1px solid rgba(242, 242, 242, 0.12);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    color: var(--unyl-text);
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+.unyl-mobile-cart-fab svg { width: 18px; height: 18px; }
+.unyl-mobile-cart-fab__count {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 3px;
+    border-radius: 999px;
+    background: var(--unyl-text);
+    color: var(--unyl-bg);
+    font-size: 10px;
+    font-family: var(--font-sans);
+}
+@media (max-width: 900px) {
+    .unyl-mobile-cart-fab { display: flex; }
 }
 
 /* ============ Desktop Shop mega-menu ============ */
 .unyl-menu-shop {
-    display: none;
+    display: block;
     position: absolute;
     top: calc(100% + 14px);
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) translateY(-10px);
     z-index: 200;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
 }
-.unyl-menu-shop.is-open { display: block; }
+.unyl-menu-shop.is-open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+}
 .unyl-menu-panel-wrap { position: relative; }
+
+@keyframes unylMenuPanelIn {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
+}
 
 .unyl-menu-stage1 {
     display: flex;
@@ -147,6 +205,8 @@
     border-radius: 24px;
     padding: 14px;
     box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+    transform-origin: top left;
+    animation: unylMenuPanelIn 0.22s ease;
 }
 .unyl-menu-stage1.is-hidden { display: none; }
 
@@ -204,8 +264,9 @@
     box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
     grid-template-columns: 280px 1fr 220px;
     gap: 28px;
+    transform-origin: top left;
 }
-.unyl-menu-stage2.is-active { display: grid; }
+.unyl-menu-stage2.is-active { display: grid; animation: unylMenuPanelIn 0.3s ease; }
 .unyl-menu-stage2__list { display: flex; flex-direction: column; gap: 4px; }
 
 .unyl-menu-stage2__middle { display: flex; flex-direction: column; gap: 16px; }
@@ -274,14 +335,25 @@
     background: var(--unyl-bg);
     transform: translateX(100%);
     transition: transform 0.3s ease;
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 .unyl-menu-mobile.is-active { transform: translateX(0); }
+.unyl-menu-mobile > .unyl-menu-mobile-header { flex-shrink: 0; }
 .unyl-menu-mobile-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 20px 24px;
+}
+/* List + detail panels: absolutely stacked within their own positioned
+   wrapper so they can slide past each other (drill-down navigation)
+   instead of the previous instant display:none/block swap. */
+.unyl-menu-mobile-panels {
+    position: relative;
+    flex: 1 1 auto;
+    overflow: hidden;
 }
 .unyl-menu-mobile-logo img { height: 32px; width: auto; }
 .unyl-menu-mobile-close,
@@ -296,9 +368,32 @@
 }
 .unyl-menu-mobile-title { font-family: var(--font-serif); font-size: 18px; color: var(--unyl-text); }
 .unyl-menu-mobile-list,
-.unyl-menu-mobile-detail { display: none; padding: 0 24px 24px; }
-.unyl-menu-mobile-list.is-active,
-.unyl-menu-mobile-detail.is-active { display: block; }
+.unyl-menu-mobile-detail {
+    position: absolute;
+    inset: 0;
+    padding: 0 24px 24px;
+    overflow-y: auto;
+    transition: transform 0.32s ease, opacity 0.32s ease;
+}
+.unyl-menu-mobile-list {
+    transform: translateX(0);
+    opacity: 1;
+}
+.unyl-menu-mobile-list:not(.is-active) {
+    transform: translateX(-100%);
+    opacity: 0;
+    pointer-events: none;
+}
+.unyl-menu-mobile-detail {
+    transform: translateX(100%);
+    opacity: 0;
+    pointer-events: none;
+}
+.unyl-menu-mobile-detail.is-active {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+}
 .unyl-menu-mobile-row {
     display: flex;
     align-items: center;
@@ -348,16 +443,16 @@
 .unyl-menu-mobile-categories { display: flex; flex-direction: column; gap: 2px; margin-top: 28px; }
 .unyl-menu-mobile-categories__label {
     font-family: var(--font-sans);
-    font-size: 12px;
+    font-size: 14px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: rgba(242, 242, 242, 0.45);
+    color: #f2f2f273;
     margin-bottom: 6px;
 }
 .unyl-menu-mobile-categories a {
     display: block;
     font-family: var(--font-sans);
-    font-size: 15px;
+    font-size: 18px;
     color: var(--unyl-text);
     text-decoration: none;
     padding: 10px 0;

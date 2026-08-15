@@ -25,7 +25,7 @@ body {
    (confirmed via the WP export's customizer CSS: html/#main background
    #000000, not the homepage's #10100F) — no card backgrounds around
    product content either. */
-body.theme-product { background: #000000; }
+body.theme-product { background: #10100f; }
 
 /* White theme for the Jewelry category-index page (per client direction —
    a light catalog page rather than the site's usual dark background). The
@@ -56,8 +56,31 @@ img { max-width: 100%; }
     margin-bottom: 20px;
 }
 .unyl-btn:hover { opacity: 0.85; }
-.unyl-btn--sm { padding: 12px 20px; }
+.unyl-btn--sm {
+    padding: 12px 20px;
+    height: 48px;
+    min-width: auto !important;
+}
 .unyl-btn--dark { background: var(--unyl-card); color: #fafafa; }
+
+.unyl-medium-btn {
+    display: inline-block;
+    font-family: var(--font-sans);
+    font-size: 18px;
+    color: var(--unyl-btn-text);
+    text-decoration: none;
+    background: var(--unyl-btn-bg);
+    border: none;
+    border-radius: 999px;
+    padding: 10px 20px;
+    transition: opacity .25s ease;
+    cursor: pointer;
+    min-width: fit-content;
+    text-align: center;
+    height: 47px;
+    margin-bottom: 0;
+}
+.unyl-medium-btn:hover { opacity: 0.85; }
 
 .unyl-divider {
     text-align: center;

@@ -12,12 +12,23 @@
 }
 .unyl-hero__media { width: 100%; }
 .unyl-hero__media img { display: block; width: 100%; height: auto; }
+.unyl-hero__container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 1400px;
+    pointer-events: none;
+}
 .unyl-hero__caption {
     position: absolute;
     top: 15%;
-    left: 8%;
+    left: 0;
     width: 100%;
     overflow: hidden;
+    pointer-events: auto;
 }
 .unyl-hero__caption-inner { width: 60%; color: var(--unyl-text); }
 .unyl-hero__title {
@@ -37,10 +48,12 @@
     max-width: 460px;
 }
 @media (max-width: 768px) {
-    /* Media (image) and caption were both flex items in a row, competing
-       for width once caption left static in-flow — stack them instead. */
-    .unyl-hero { display: block; min-height: 0; }
-    .unyl-hero__caption { position: static; padding: 32px 6vw 40px; }
+    /* Stack caption above the image (not overlaid) — order the container
+       first so the text reads before the photo on mobile. */
+    .unyl-hero { display: flex; flex-direction: column; min-height: 0; }
+    .unyl-hero__media { order: 2; }
+    .unyl-hero__container { order: 1; position: static; max-width: 100%; transform: none; }
+    .unyl-hero__caption { position: absolute; padding: 40px 6vw 32px; }
     .unyl-hero__caption-inner { width: 100%; }
 }
 
@@ -79,7 +92,7 @@
     background-repeat: no-repeat;
 }
 .unyl-hcard--lg { min-height: 425px; }
-.unyl-hcard--sm { min-height: 280px; }
+.unyl-hcard--sm { min-height: 310px; }
 @media (max-width: 768px) {
     .unyl-hcard { background-image: var(--bg-mobile, var(--bg-desktop)); }
 }
@@ -121,13 +134,15 @@
 .unyl-timeline__row {
     position: absolute;
     z-index: 2;
-    left: 0; right: 0; bottom: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 8px;
     max-width: 1400px;
     margin: 0 auto;
-    padding: 48px 6vw 40px;
+    padding: 48px 0vw 40px;
     text-align: left;
     box-sizing: border-box;
 }
@@ -159,29 +174,52 @@
 .unyl-timeline__item.is-active .unyl-timeline__caption { display: block; }
 @media (max-width: 768px) {
     .unyl-timeline__stage { min-height: 520px; }
-    .unyl-timeline__row { grid-template-columns: 1fr 1fr; gap: 24px; padding: 32px 20px; }
+    .unyl-timeline__row { grid-template-columns: 1fr; gap: 24px; padding: 32px 20px; }
+    /* One era per view on mobile (slider-style) — only the active card
+       renders; the others are still cycled through by the existing
+       auto-rotate/click logic in home-timeline.js, just hidden meanwhile. */
+    .unyl-timeline__item:not(.is-active) { display: none; }
 }
 
 /* ===== Statement ===== */
-.unyl-statement { background: var(--unyl-bg); color: var(--unyl-text); padding: 60px 6vw; display: flex; align-items: center; justify-content: center; gap: 24px; text-align: center; }
+.unyl-statement { background: var(--unyl-bg); color: var(--unyl-text); padding: 60px 0vw; display: flex; align-items: center; justify-content: center; gap: 24px; text-align: center; max-width: 1400px; margin: auto; }
 .unyl-statement__mark {
     width: 190px;
     height: auto;
     flex-shrink: 0;
     opacity: .85;
 }
-.unyl-statement__text { font-family: var(--font-serif); font-weight: 400; font-size: clamp(1.6rem, 4vw, 48px); line-height: 1.2; max-width: 900px; margin: 0; }
+.unyl-statement__text { font-family: var(--font-serif); font-weight: 400; font-size: clamp(1.6rem, 4vw, 48px); line-height: 1.2; max-width: 100%; margin: 0; }
 @media (max-width: 640px) {
-    .unyl-statement { flex-direction: column; gap: 16px; }
+    /* Small corner ornaments framing left-aligned text, rather than large
+       icons flanking centered text — matches the mobile design. */
+    .unyl-statement {
+        position: relative;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: flex-start;
+        gap: 0;
+        text-align: left;
+        padding: 50px 24px;
+    }
+    .unyl-statement__mark {
+        position: absolute;
+        top: 24px;
+        width: 95px;
+        opacity: 0.6;
+    }
+    .unyl-statement__mark:first-child { left: 24px; }
+    .unyl-statement__mark:last-child { right: 24px; }
+    .unyl-statement__text { margin-top: 56px; font-size: clamp(1.4rem, 6vw, 2rem); }
 }
 
 /* ===== Jewelry CTA ===== */
-.unyl-jewelry-cta { background: var(--unyl-bg); color: var(--unyl-text); display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 50px; padding: 80px 6vw; }
+.unyl-jewelry-cta { background: var(--unyl-bg); color: var(--unyl-text); display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 50px; padding: 80px 0px; max-width: 1400px; margin: auto; }
 .unyl-jewelry-cta__media img { width: 100%; display: block; border-radius: 16px; object-fit: cover; }
 .unyl-jewelry-cta__text h2 { font-family: var(--font-serif); font-weight: 400; font-size: clamp(1.8rem, 4vw, 48px); line-height: 1.2; margin: 0 0 20px; }
 .unyl-jewelry-cta__text p { font-family: var(--font-sans); font-size: 18px; line-height: 1.8; color: rgba(242, 242, 242, 0.75); margin: 0 0 30px; max-width: 420px; }
 @media (max-width: 768px) {
-    .unyl-jewelry-cta { grid-template-columns: 1fr; gap: 30px; }
+    .unyl-jewelry-cta { grid-template-columns: 1fr; gap: 30px; padding: 50px 6vw; }
 }
 
 /* ===== Gallery CTA =====
@@ -194,7 +232,9 @@
     grid-template-columns: 1fr 1fr;
     align-items: center;
     gap: 50px;
-    padding: 80px 6vw;
+    padding: 80px 0px;
+    max-width: 1400px;
+    margin: auto;
 }
 .unyl-gallery-cta__media img { width: 100%; display: block; border-radius: 16px; object-fit: cover; }
 .unyl-gallery-cta__text h2 { font-family: var(--font-serif); font-weight: 400; font-size: clamp(1.8rem, 4vw, 48px); line-height: 1.2; margin: 0 0 20px; }
@@ -203,7 +243,7 @@
 .unyl-divider--left { text-align: left; margin-top: 40px; }
 .unyl-divider--left img { height: 24px; }
 @media (max-width: 768px) {
-    .unyl-gallery-cta { grid-template-columns: 1fr; gap: 30px; }
+    .unyl-gallery-cta { grid-template-columns: 1fr; gap: 30px; padding: 50px 6vw; }
     .unyl-gallery-cta__media { order: -1; }
 }
 
@@ -211,7 +251,7 @@
    Real production layout (#aoph-row in html_version): two side-by-side
    cards, each a rounded #1A1A1A panel with heading+text on top and an
    image bleeding edge-to-edge at the bottom — not stacked full-width rows. */
-.unyl-craft { background: var(--unyl-bg); color: var(--unyl-text); padding: 90px 6vw; }
+.unyl-craft { background: var(--unyl-bg); color: var(--unyl-text); padding: 90px 0px; max-width: 1400px; margin: auto; }
 .unyl-craft__grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -244,8 +284,9 @@
     margin: 0 0 12px;
 }
 .unyl-craft__card p { font-family: var(--font-sans); font-size: 18px; line-height: 1.7; color: rgba(242, 242, 242, 0.75); margin: 0; }
-.unyl-craft__note { padding: 20px 30px 0; margin: 0; font-family: var(--font-sans); font-size: 0.8rem; color: rgba(242, 242, 242, 0.5); }
+.unyl-craft__note { padding: 20px 30px; margin: 0; font-family: var(--font-sans); font-size: 0.8rem; color: #f2f2f280; }
 @media (max-width: 768px) {
+    .unyl-craft { padding: 50px 6vw; }
     .unyl-craft__grid { grid-template-columns: 1fr; }
 }
 
@@ -257,7 +298,17 @@
    descendant "img" selector here would incorrectly win over .unyl-workshop__icon. */
 .unyl-workshop__media > picture { display: block; }
 .unyl-workshop__media > picture img { width: 100%; border-radius: 0; display: block; object-fit: contain; }
-.unyl-workshop__card { position: absolute; left: 40px; bottom: 40px; max-width: 420px; border-radius: 16px; }
+.unyl-workshop__container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 1400px;
+    pointer-events: none;
+}
+.unyl-workshop__card { position: absolute; left: 0px; bottom: 40px; max-width: 505px; border-radius: 16px; pointer-events: auto; }
 .unyl-workshop__card h2 {
     font-family: var(--font-serif);
     font-weight: 400;
@@ -272,17 +323,56 @@
     display: flex;
     flex-direction: column;
     background: var(--unyl-card);
-    padding: 0px;
+    padding: 0;
     border-radius: 16px;
-}.unyl-workshop__list li { display: flex; align-items: flex-start; gap: 14px; padding: 20px;border-bottom: 1px solid #FFFFFF1A }
-/* flex-basis:auto sizes to the unwrapped paragraph's full width, which is huge —
-   flex:1 makes this column fill the remaining row space directly instead of
-   shrinking from that huge basis (which, combined with min-width:0, collapsed
-   it to 0 rather than wrapping). */
-.unyl-workshop__list li > div { flex: 1; min-width: 0; }
+    max-width: 420px;
+}
+.unyl-workshop__list li {
+    position: relative;
+    padding: 20px;
+    border-bottom: 1px solid #FFFFFF1A;
+}
+.unyl-workshop__list li:last-child { border-bottom: none; }
+.unyl-workshop__list li.is-active::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 164px;
+    height: 4px;
+    background: #d9d9d9;
+    border-radius: 0px;
+}
+.unyl-workshop__item-trigger {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    text-align: left;
+    color: inherit;
+    font: inherit;
+}
 .unyl-workshop__icon { width: 28px; height: 28px; flex-shrink: 0; object-fit: contain; }
-.unyl-workshop__list h3 { font-family: var(--font-serif); font-size: 28px; line-height: 1.2; font-weight: 400; margin: 0 0 4px; }
-.unyl-workshop__list p { font-family: var(--font-sans); font-size: 18px; line-height: 1.5; color: rgba(242, 242, 242, 0.65); margin: 0; }
+.unyl-workshop__list h3 { font-family: var(--font-serif); font-size: 28px; line-height: 1.2; font-weight: 400; margin: 0; }
+.unyl-workshop__item-content {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.3s ease;
+}
+.unyl-workshop__list li.is-active .unyl-workshop__item-content { grid-template-rows: 1fr; }
+.unyl-workshop__item-content-inner { overflow: hidden; min-height: 0; }
+.unyl-workshop__list p {
+    font-family: var(--font-sans);
+    font-size: 18px;
+    line-height: 1.5;
+    color: rgba(242, 242, 242, 0.65);
+    margin: 12px 0 0 42px;
+}
 .unyl-quote { max-width: 700px; margin: 80px auto 0; text-align: center; padding-bottom: 90px; }
 .unyl-quote__mark { width: 32px; opacity: 0.8; margin-bottom: 20px; }
 .unyl-quote__text { font-family: var(--font-serif); font-size: clamp(1.6rem, 4vw, 48px); line-height: 1.2; margin: 0 0 30px; }
@@ -292,7 +382,16 @@
 .unyl-quote__name { font-family: var(--font-serif); font-size: 28px; line-height: 1.2; }
 .unyl-quote__role { font-family: var(--font-sans); font-size: 18px; color: rgba(242, 242, 242, 0.6); }
 @media (max-width: 768px) {
-    .unyl-workshop__card { position: static; max-width: 100%; margin-top: 20px; box-sizing: border-box; }
+    .unyl-workshop__container { position: static; max-width: 100%; transform: none; }
+    .unyl-workshop__card {
+        position: relative;
+        z-index: 2;
+        max-width: 100%;
+        margin-top: -210%;
+        box-sizing: border-box;
+        padding: 0px 6vw;
+    }
+    .unyl-workshop__list { margin-top: 115%; }
     .unyl-workshop__list h3 { font-size: 22px; }
 }
 

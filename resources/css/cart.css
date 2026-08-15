@@ -58,8 +58,8 @@
 .unyl-cart__product { display: flex; align-items: center; gap: 16px; }
 .unyl-cart__thumb {
     display: block;
-    width: 64px;
-    height: 64px;
+    width: 82px;
+    height: auto;
     border-radius: 8px;
     overflow: hidden;
     background: var(--unyl-card);
@@ -95,6 +95,8 @@
 .unyl-cart__totals-note { font-size: 13px; color: rgba(242, 242, 242, 0.4); margin: 10px 0; }
 .unyl-cart__totals-row--total { color: var(--unyl-text); font-size: 18px; font-weight: 600; border-bottom: none; }
 .unyl-cart__checkout-btn { display: block; text-align: center; width: 100%; margin-top: 20px; box-sizing: border-box; }
+
+.unyl-cart__table-wrap { max-width: 900px; }
 
 @media (max-width: 900px) {
     .unyl-cart__layout { grid-template-columns: 1fr; }

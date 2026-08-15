@@ -139,6 +139,33 @@ class WooCommerceService
         return $response->successful() ? $response->json() : [];
     }
 
+    /** Orders belonging to a specific customer (WP user ID), newest first. */
+    public function getOrdersForCustomer(int $customerId, int $perPage = 20): array
+    {
+        $response = $this->client()->get($this->endpoint('orders'), [
+            'customer' => $customerId,
+            'per_page' => $perPage,
+            'orderby' => 'date',
+            'order' => 'desc',
+        ]);
+
+        return $response->successful() ? $response->json() : [];
+    }
+
+    // ── Customers ────────────────────────────────────────────
+
+    public function getCustomer(int $id): array
+    {
+        $response = $this->client()->get($this->endpoint("customers/{$id}"));
+        return $response->successful() ? $response->json() : [];
+    }
+
+    public function updateCustomer(int $id, array $data): array
+    {
+        $response = $this->client()->put($this->endpoint("customers/{$id}"), $data);
+        return $response->successful() ? $response->json() : [];
+    }
+
     // ── Categories ───────────────────────────────────────────
 
     public function getCategories(int $perPage = 100): array

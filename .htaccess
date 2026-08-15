@@ -1,0 +1,24 @@
+# Deploy note: this file goes in the SUBDOMAIN'S DOCUMENT ROOT on Bluehost —
+# the folder that contains artisan/composer.json (i.e. one level above public/),
+# not inside public/ itself.
+
+# Prevent access to .env and other dotfiles
+<Files .*>
+    # Apache 2.2
+    <IfModule !mod_authz_core.c>
+        Order deny,allow
+        Deny from all
+    </IfModule>
+    # Apache 2.4
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+</Files>
+
+# Transparently serve everything from public/ so the URL bar never shows
+# "/public" — no redirect, just an internal rewrite.
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
