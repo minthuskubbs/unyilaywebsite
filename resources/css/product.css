@@ -186,6 +186,7 @@ body.theme-light .unyl-product__meta a { color: rgba(26, 26, 26, 0.75); }
 body.theme-light .unyl-product__meta a:hover { color: #1a1a1a; }
 
 /* Related-products slider inherits the page's white theme too */
+body.theme-light .unyl-product__related .unyl-slider__title { color: #1a1a1abf; }
 body.theme-light .unyl-slider__slide-image { background: #f7f7f7; border: 1px solid rgba(0, 0, 0, 0.08); }
 body.theme-light .unyl-slider__slide-title { color: #1a1a1a; }
 body.theme-light .unyl-slider__slide-price { color: rgba(26, 26, 26, 0.6); }
