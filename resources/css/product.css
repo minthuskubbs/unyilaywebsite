@@ -142,14 +142,28 @@
 
 .unyl-product__description { margin-top: 24px; }
 .unyl-product__description h3 {
+    position: relative;
     font-family: var(--font-serif);
     font-weight: 400;
     font-size: 20px;
     margin: 0 0 12px;
 }
+.unyl-product__description h3::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 35px;
+    height: 2px;
+    background: #0000001a;
+}
 .unyl-product__description { font-family: var(--font-sans); font-size: 15px; line-height: 1.8; color: var(--unyl-text-dim); }
 
-.unyl-product__related { margin-top: 90px; }
+.unyl-product__related {
+    margin-top: 30px;
+    border-top: 1px solid rgba(242, 242, 242, .1);
+    padding-top: 40px;
+}
 .unyl-product__related .unyl-slider__title {
     font-size: clamp(1.4rem, 2.6vw, 28px);
     text-align: left;

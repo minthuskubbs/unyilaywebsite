@@ -7,7 +7,7 @@ import { initScrollReveal } from './scroll-reveal';
 import { initSearch } from './search';
 import { initWishlist } from './wishlist';
 import { initWorkshopAccordion } from './workshop-accordion';
-import { initShopSidebar } from './shop-sidebar';
+import { initShopSidebar, initBreadcrumbDropdown } from './shop-sidebar';
 import { initProductPopups } from './product-popups';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -20,5 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initWishlist();
     initWorkshopAccordion();
     initShopSidebar();
+    initBreadcrumbDropdown();
     initProductPopups();
 });

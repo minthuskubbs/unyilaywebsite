@@ -1,7 +1,7 @@
 <x-layouts.app :categories="$categories" :title="$title . ' — U Nyi Lay Silver Shop'" :body-class="($isJewelry ?? false) ? 'theme-light' : null">
     <div class="unyl-shop">
         <div class="unyl-shop__header">
-            <x-shop.breadcrumb :breadcrumbs="$breadcrumbs" :current="$title" />
+            <x-shop.breadcrumb :breadcrumbs="$breadcrumbs" :current="$title" :hide-on-mobile="true" />
             <h1 class="unyl-shop__title">{{ $category['name'] }}</h1>
         </div>
 

@@ -22,6 +22,15 @@ class ProductController extends Controller
 
         $primaryCategory = $product['categories'][0] ?? null;
         $breadcrumbs = $primaryCategory ? $this->categories->ancestors($primaryCategory['term_id']) : [];
+
+        // "Big Items" isn't a real WooCommerce category (it's the virtual
+        // grouping of all top-level non-jewelry categories that /shop
+        // represents), so it never shows up via ancestors() — prepend it
+        // manually as a link back to /shop, matching the shop pages.
+        if ($primaryCategory && !$this->categories->isJewelryCategory($primaryCategory['term_id'])) {
+            array_unshift($breadcrumbs, ['name' => 'Big Items', 'url' => url('/shop')]);
+        }
+
         if ($primaryCategory) {
             $breadcrumbs[] = $primaryCategory;
         }

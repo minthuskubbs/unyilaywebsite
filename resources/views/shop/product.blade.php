@@ -141,6 +141,10 @@
 
                     @if ($product['type'] === 'variable')
                         @foreach ($product['attributes'] as $taxonomy => $attr)
+                            {{-- Non-variation attributes (is_variation: false) are informational only
+                                 in WooCommerce — e.g. a "Price" attribute some products carry purely
+                                 for display — not something the shopper picks, so no <select> for those. --}}
+                            @continue(empty($attr['is_variation']))
                             <div class="unyl-product__attr">
                                 <label for="attr-{{ $taxonomy }}">{{ $attr['label'] }}</label>
                                 <select id="attr-{{ $taxonomy }}" class="unyl-product__select" name="attributes[{{ $taxonomy }}]" data-attribute="{{ $taxonomy }}">

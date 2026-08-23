@@ -111,6 +111,25 @@ class CategoryService
         });
     }
 
+    /**
+     * Sidebar tree for jewelry pages — jewelry's own subcategories (Necklaces,
+     * Bracelets, Rings, etc.) instead of the unrelated "Big Items" top-level
+     * categories that sidebarTree() returns.
+     */
+    public function jewelrySidebarTree(): array
+    {
+        return Cache::remember('categories.sidebar.jewelry', self::CACHE_TTL, function () {
+            $children = $this->termsByParent(self::JEWELRY_PARENT_ID);
+
+            return $children->map(fn ($term) => [
+                'term_id' => $term->term_id,
+                'name' => $term->name,
+                'slug' => $term->slug,
+                'children' => [],
+            ])->all();
+        });
+    }
+
     public function findBySlug(string $slug): ?array
     {
         return Cache::remember("categories.slug.{$slug}", self::CACHE_TTL, function () use ($slug) {

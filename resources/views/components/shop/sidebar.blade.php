@@ -1,10 +1,5 @@
 @props(['tree' => [], 'activeSlug' => null])
 
-<button type="button" class="unyl-shop-sidebar__mobile-trigger" id="openShopFilter">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
-    Categories
-</button>
-
 <div class="unyl-shop-sidebar__backdrop" id="shopFilterBackdrop"></div>
 
 <aside class="unyl-shop-sidebar" id="shopSidebar">

@@ -69,6 +69,14 @@ class ShopController extends Controller
 
         $isJewelry = $this->categories->isJewelryCategory($category['term_id']);
 
+        // "Big Items" isn't a real WooCommerce category (it's the virtual
+        // grouping of all top-level non-jewelry categories that /shop
+        // represents), so it never shows up via ancestors() — prepend it
+        // manually as a link back to /shop for non-jewelry breadcrumbs.
+        if (!$isJewelry) {
+            array_unshift($breadcrumbs, ['name' => 'Big Items', 'url' => url('/shop')]);
+        }
+
         if (!empty($children)) {
             return view('shop.category-index', [
                 'categories' => $menuCategories,
@@ -85,7 +93,7 @@ class ShopController extends Controller
 
         return view('shop.archive', [
             'categories' => $menuCategories,
-            'sidebar' => $this->categories->sidebarTree(),
+            'sidebar' => $isJewelry ? $this->categories->jewelrySidebarTree() : $this->categories->sidebarTree(),
             'breadcrumbs' => [...$breadcrumbs, ['term_id' => $category['term_id'], 'name' => $category['name'], 'slug' => $category['slug']]],
             'title' => $category['name'],
             'listing' => $listing,

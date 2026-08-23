@@ -16,7 +16,7 @@
                     No. (1), Soon Loon Gu Kyaung Street, Yankin Tsp, Yangon, Myanmar.
                 </a>
                 <a href="https://www.google.com/maps/place/U+Nyi+Lay+Silver+Shop/@16.7803672,96.1534116,17z" target="_blank" rel="noopener">
-                    No. (62), Central Hall, Bogyoke Market.
+                    No. (62), Central Hall, Bogyoke Market. (Temporary Closed)
                 </a>
             </div>
             <div class="unyl-contact__col">

@@ -18,7 +18,7 @@
             <div class="unyl-footer-block">
                 <h4>Address</h4>
                 <p>No. (1), Soon Loon Gu Kyaung Street, Yankin Tsp, Yangon, Myanmar.</p>
-                <p>No. (62), Central Hall, Bogyoke Market.</p>
+                <p>No. (62), Central Hall, Bogyoke Market. (Temporary Closed)</p>
             </div>
 
             <div class="unyl-footer-block">

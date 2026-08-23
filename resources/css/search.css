@@ -6,7 +6,7 @@
     cursor: pointer;
     display: flex;
     align-items: center;
-    color: inherit;
+    color: #f2f2f2;
 }
 
 .unyl-search-overlay {

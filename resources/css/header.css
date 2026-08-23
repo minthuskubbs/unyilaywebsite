@@ -128,7 +128,7 @@
     .site-header__nav { display: none; }
     .site-header__icons > li:not(.site-header__icons--search) { display: none; }
     .site-header__icons { margin-left: auto; gap: 14px; }
-    .site-header__mobile-toggle { display: block; }
+    .site-header__mobile-toggle { display: block; margin-right: 12px; }
 }
 
 /* ============ Mobile floating cart button (chatbot-style bubble) ============ */

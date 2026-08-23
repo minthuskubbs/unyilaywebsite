@@ -2,6 +2,10 @@
     <div class="unyl-shop">
         <div class="unyl-shop__header">
             <x-shop.breadcrumb :breadcrumbs="array_slice($breadcrumbs, 0, -1)" :current="$title" />
+            <button type="button" class="unyl-shop-sidebar__mobile-trigger" id="openShopFilter">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+                Categories
+            </button>
         </div>
 
         <div class="unyl-shop__layout">
