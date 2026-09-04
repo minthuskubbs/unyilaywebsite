@@ -26,6 +26,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
 Route::get('/search', [ShopController::class, 'search'])->name('shop.search');
+Route::get('/search-items', [ShopController::class, 'searchPage'])->name('shop.search-items');
 Route::get('/product-category/{slug}', [ShopController::class, 'category'])->name('shop.category');
 Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product.show');
 

@@ -41,6 +41,30 @@ class ShopController extends Controller
         ]);
     }
 
+    /**
+     * GET /search-items — standalone full-page search (as opposed to the
+     * header's overlay dropdown): a big centered input matching the
+     * overlay's look, with results below once a term is entered, or a
+     * Big Items / Jewelry category directory (matching the live site's
+     * own /search-items page) before a search is made.
+     */
+    public function searchPage(Request $request)
+    {
+        $search = trim((string) $request->query('s', ''));
+        $page = max(1, (int) $request->query('product-page', 1));
+
+        $listing = $search !== '' ? $this->products->paginate(null, $page, search: $search) : null;
+
+        return view('pages.search-items', [
+            'categories' => $this->categories->megaMenuGroups(),
+            'search' => $search,
+            'listing' => $listing,
+            'bigItemsCategories' => $search === '' ? $this->categories->bigItemsCategoriesWithImages() : [],
+            'jewelryCategories' => $search === '' ? $this->categories->jewelryCategoriesWithImages() : [],
+            'baseUrl' => url('/search-items') . ($search !== '' ? '?s=' . urlencode($search) : ''),
+        ]);
+    }
+
     /** GET /search — live-search JSON for the header search dropdown. */
     public function search(Request $request)
     {

@@ -177,6 +177,29 @@ class CategoryService
     }
 
     /**
+     * All top-level "Big Items" categories with images — used for the
+     * search page's Big Items/Jewelry category directory (side by side).
+     */
+    public function bigItemsCategoriesWithImages(): array
+    {
+        return Cache::remember('categories.big-items-with-images', self::CACHE_TTL, function () {
+            return $this->termsByParent(0, self::EXCLUDED_PARENT_IDS)
+                ->map(fn ($term) => [
+                    'term_id' => $term->term_id,
+                    'name' => $term->name,
+                    'slug' => $term->slug,
+                    'image' => $this->categoryImage($term->term_id, $term->slug),
+                ])->all();
+        });
+    }
+
+    /** Jewelry's own subcategories with images — the search page's Jewelry column. */
+    public function jewelryCategoriesWithImages(): array
+    {
+        return $this->children(self::JEWELRY_PARENT_ID);
+    }
+
+    /**
      * Breadcrumb chain from root to this category (excluding the category itself).
      */
     public function ancestors(int $termId): array
