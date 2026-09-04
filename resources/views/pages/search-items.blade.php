@@ -1,9 +1,6 @@
 <x-layouts.app :categories="$categories" title="Search Items — U Nyi Lay Silver Shop">
     <div class="unyl-search-page">
         <div class="unyl-search-page__hero">
-            <h1>Search Items</h1>
-            <div class="unyl-divider"><img src="{{ asset('images/home/divider-small-leaf.svg') }}" alt="" loading="lazy" /></div>
-
             <form action="{{ url('/search-items') }}" method="GET" class="unyl-search-form unyl-search-page__form">
                 <input type="text" name="s" value="{{ $search }}" class="unyl-search-form__input" placeholder="Search Items" autofocus />
                 <button type="submit" class="unyl-search-form__submit" aria-label="Search">

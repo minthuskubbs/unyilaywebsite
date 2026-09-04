@@ -179,14 +179,6 @@
     padding: 150px 24px 60px;
     text-align: center;
 }
-.unyl-search-page__hero h1 {
-    font-family: var(--font-serif);
-    font-weight: 400;
-    font-size: clamp(1.8rem, 4vw, 44px);
-    margin: 0 0 20px;
-    color: var(--unyl-text);
-}
-.unyl-search-page__hero .unyl-divider { margin: 0 auto 40px; }
 .unyl-search-page__form { border-bottom-color: rgba(242, 242, 242, 0.3); }
 
 .unyl-search-page__results,
