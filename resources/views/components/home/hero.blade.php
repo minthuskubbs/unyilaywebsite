@@ -1,8 +1,8 @@
 <section class="unyl-hero">
     <div class="unyl-hero__media">
         <picture>
-            <source media="(max-width: 768px)" srcset="https://unyilaysilver.com/wp-content/uploads/2026/08/Hero-Section-5-e1786621792815.png" />
-            <img src="https://unyilaysilver.com/wp-content/uploads/2026/08/Hero-Section-2.png" alt="Myanmar Silver & Jewelry" />
+            <source media="(max-width: 768px)" srcset="{{ asset('images/home/hero-banner-mobile.png') }}" />
+            <img src="{{ asset('images/home/hero-banner-latest.png') }}" alt="Myanmar Silver & Jewelry" />
         </picture>
     </div>
     <div class="unyl-hero__container">
