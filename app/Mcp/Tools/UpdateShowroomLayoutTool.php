@@ -6,17 +6,23 @@ use App\Services\BrassShowroomManager;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Laravel\Mcp\Request;
 use Laravel\Mcp\Response;
-use Laravel\Mcp\Server\Attributes\Description;
-use Laravel\Mcp\Server\Attributes\Name;
 use Laravel\Mcp\Server\Tools\Annotations\IsDestructive;
 use Laravel\Mcp\Server\Tools\Annotations\IsIdempotent;
 
-#[Name('update_showroom_layout_draft')]
-#[Description('Update the private showroom layout draft: room colors, ambient and bounce light, shared spotlight color, exposure, and bench visibility or position. Omitted fields stay unchanged. Artwork placement is changed with update_artwork_draft.')]
 #[IsDestructive(false)]
 #[IsIdempotent]
 final class UpdateShowroomLayoutTool extends ShowroomTool
 {
+    public function name(): string
+    {
+        return 'update_showroom_layout_draft';
+    }
+
+    public function description(): string
+    {
+        return 'Update the private showroom layout draft: room colors, ambient and bounce light, shared spotlight color, exposure, and bench visibility or position. Omitted fields stay unchanged. Artwork placement is changed with update_artwork_draft.';
+    }
+
     public function handle(Request $request, BrassShowroomManager $showroom): Response
     {
         $input = $request->validate([

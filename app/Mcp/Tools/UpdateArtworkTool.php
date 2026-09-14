@@ -6,17 +6,23 @@ use App\Services\BrassShowroomManager;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Laravel\Mcp\Request;
 use Laravel\Mcp\Response;
-use Laravel\Mcp\Server\Attributes\Description;
-use Laravel\Mcp\Server\Attributes\Name;
 use Laravel\Mcp\Server\Tools\Annotations\IsDestructive;
 use Laravel\Mcp\Server\Tools\Annotations\IsIdempotent;
 
-#[Name('update_artwork_draft')]
-#[Description('Update one artwork in the private draft. Supports Myanmar/English titles, MMK price, framed dimensions, wall and slot, hanging height, display scale, downlight intensity, and crop rectangle. Omitted fields stay unchanged. This does not publish.')]
 #[IsDestructive(false)]
 #[IsIdempotent]
 final class UpdateArtworkTool extends ShowroomTool
 {
+    public function name(): string
+    {
+        return 'update_artwork_draft';
+    }
+
+    public function description(): string
+    {
+        return 'Update one artwork in the private draft. Supports Myanmar/English titles, MMK price, framed dimensions, wall and slot, hanging height, display scale, downlight intensity, and crop rectangle. Omitted fields stay unchanged. This does not publish.';
+    }
+
     public function handle(Request $request, BrassShowroomManager $showroom): Response
     {
         $input = $request->validate([

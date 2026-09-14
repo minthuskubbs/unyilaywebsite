@@ -6,15 +6,21 @@ use App\Services\BrassShowroomManager;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Laravel\Mcp\Request;
 use Laravel\Mcp\Response;
-use Laravel\Mcp\Server\Attributes\Description;
-use Laravel\Mcp\Server\Attributes\Name;
 use Laravel\Mcp\Server\Tools\Annotations\IsDestructive;
 
-#[Name('replace_artwork_image_draft')]
-#[Description('Upload a decoded PNG, JPEG, or WebP artwork image to private storage-backed draft configuration. Send base64 bytes or a data URL, maximum 8 MB by default. SVG and remote URLs are rejected. This does not publish.')]
 #[IsDestructive(false)]
 final class ReplaceArtworkImageTool extends ShowroomTool
 {
+    public function name(): string
+    {
+        return 'replace_artwork_image_draft';
+    }
+
+    public function description(): string
+    {
+        return 'Upload a decoded PNG, JPEG, or WebP artwork image to private storage-backed draft configuration. Send base64 bytes or a data URL, maximum 8 MB by default. SVG and remote URLs are rejected. This does not publish.';
+    }
+
     public function handle(Request $request, BrassShowroomManager $showroom): Response
     {
         $input = $request->validate([

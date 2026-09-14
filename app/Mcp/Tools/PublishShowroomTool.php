@@ -6,17 +6,23 @@ use App\Services\BrassShowroomManager;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Laravel\Mcp\Request;
 use Laravel\Mcp\Response;
-use Laravel\Mcp\Server\Attributes\Description;
-use Laravel\Mcp\Server\Attributes\Name;
 use Laravel\Mcp\Server\Tools\Annotations\IsDestructive;
 use Laravel\Mcp\Server\Tools\Annotations\IsIdempotent;
 
-#[Name('publish_showroom')]
-#[Description('Publish the reviewed draft atomically to the public showroom. Call get_showroom_state and create_showroom_preview first. The expected draft revision prevents publishing stale or concurrently changed data.')]
 #[IsDestructive]
 #[IsIdempotent]
 final class PublishShowroomTool extends ShowroomTool
 {
+    public function name(): string
+    {
+        return 'publish_showroom';
+    }
+
+    public function description(): string
+    {
+        return 'Publish the reviewed draft atomically to the public showroom. Call get_showroom_state and create_showroom_preview first. The expected draft revision prevents publishing stale or concurrently changed data.';
+    }
+
     public function handle(Request $request, BrassShowroomManager $showroom): Response
     {
         $input = $request->validate([
