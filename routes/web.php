@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BrassShowroomController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\HomeController;
@@ -50,8 +51,12 @@ Route::get('/news-articles', [PageController::class, 'news'])->name('pages.news'
 Route::get('/news-articles/{slug}', [PageController::class, 'newsShow'])->name('pages.news.show');
 
 // Standalone 3D showroom (no site header/footer — full-viewport experience
-// with its own topbar). Public content only, no MCP/remote-write layer.
-Route::view('/brass', 'pages.brass')->name('pages.brass');
+// with its own topbar). Published config is managed via the authenticated
+// MCP layer in routes/ai.php; this route only ever renders the public view.
+Route::get('/brass', [BrassShowroomController::class, 'show'])->name('brass-showroom.show');
+Route::get('/brass/preview', [BrassShowroomController::class, 'preview'])
+    ->middleware(['signed', 'throttle:30,1'])
+    ->name('brass-showroom.preview');
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:6,1')->name('login.attempt');

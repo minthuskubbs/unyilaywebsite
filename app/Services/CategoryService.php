@@ -48,11 +48,11 @@ class CategoryService
     }
 
     /**
-     * The 2-item "Shop" mega-menu structure (desktop hover + mobile drill-down):
-     * Big Items (all 40 top-level non-jewelry categories) and Jewelry (Silver)
-     * (term 93's children). "Brass" from the Figma mock has no backing data
-     * anywhere in WooCommerce (no category/tag/attribute) — dropped per
-     * client direction until real brass products/categories exist.
+     * The mega-menu structure (desktop hover + mobile drill-down): Big Items
+     * (all 40 top-level non-jewelry categories), Jewelry (Silver) (term 93's
+     * children), and Brass — the standalone 3D showroom at /brass, which has
+     * no backing WooCommerce category/products so it links straight out via
+     * "All Items" instead of listing subcategories.
      */
     public function megaMenuGroups(): array
     {
@@ -83,6 +83,16 @@ class CategoryService
                     'categories' => $jewelryCategories->map(fn ($t) => ['term_id' => $t->term_id, 'name' => $t->name, 'slug' => $t->slug])->all(),
                     'popular_product' => $this->representativeProductAcrossCategories($jewelryIds, 'popular'),
                     'new_product' => $this->representativeProductAcrossCategories($jewelryIds, 'new'),
+                ],
+                [
+                    'key' => 'brass',
+                    'name' => 'Brass',
+                    'description' => 'The beauty of brass. Step inside. Take your time. Discover six works of Myanmar craftsmanship.',
+                    'url' => url('/brass'),
+                    'image' => asset('images/menu/brass.png'),
+                    'categories' => [],
+                    'popular_product' => null,
+                    'new_product' => null,
                 ],
             ];
         });
