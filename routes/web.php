@@ -49,6 +49,10 @@ Route::post('/contact-us', [PageController::class, 'contactSubmit'])->name('page
 Route::get('/news-articles', [PageController::class, 'news'])->name('pages.news');
 Route::get('/news-articles/{slug}', [PageController::class, 'newsShow'])->name('pages.news.show');
 
+// Standalone 3D showroom (no site header/footer — full-viewport experience
+// with its own topbar). Public content only, no MCP/remote-write layer.
+Route::view('/brass', 'pages.brass')->name('pages.brass');
+
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:6,1')->name('login.attempt');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
