@@ -58,6 +58,24 @@ Route::get('/brass/preview', [BrassShowroomController::class, 'preview'])
     ->middleware(['signed', 'throttle:30,1'])
     ->name('brass-showroom.preview');
 
+// Serves the active (or a staged) frontend JS/CSS release; defaults to the
+// bundled public/vendor files until the owner activates a release via MCP.
+Route::get('/brass/assets/{release}/{asset}', [BrassShowroomController::class, 'frontendAsset'])
+    ->where(['release' => 'bundled|[0-9a-fA-F-]{36}', 'asset' => 'javascript|stylesheet'])
+    ->middleware('throttle:120,1')
+    ->name('brass-showroom.frontend-asset');
+
+Route::get('/brass/frontend-preview/{release}', [BrassShowroomController::class, 'frontendPreview'])
+    ->whereUuid('release')
+    ->middleware(['signed', 'throttle:30,1'])
+    ->name('brass-showroom.frontend-preview');
+
+Route::get('/brass/frontend-preview/{release}/assets/{asset}', [BrassShowroomController::class, 'frontendPreviewAsset'])
+    ->whereUuid('release')
+    ->whereIn('asset', ['javascript', 'stylesheet'])
+    ->middleware(['signed', 'throttle:120,1'])
+    ->name('brass-showroom.frontend-preview-asset');
+
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:6,1')->name('login.attempt');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

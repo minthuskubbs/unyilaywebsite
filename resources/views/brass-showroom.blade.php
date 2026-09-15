@@ -1,14 +1,17 @@
 {{--
   Brass Art Gallery partial. The CSS and JS are external so this view works with a strict CSP.
   Prebuilt bundle from the vendor handoff — copy public/vendor/brass-showroom exactly if updating.
+  frontendAssetUrls (set by BrassShowroomController) lets an activated MCP frontend release override
+  the bundled CSS/JS below; it falls back to the static bundled files when nothing has been activated.
 --}}
-<link rel="stylesheet" href="{{ asset('vendor/brass-showroom/brass-showroom.css') }}">
-
 @php
   $encodedShowroomConfig = isset($showroomConfig)
       ? base64_encode(json_encode($showroomConfig, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR))
       : '';
+  $brassStylesheetUrl = $frontendAssetUrls['stylesheet'] ?? asset('vendor/brass-showroom/brass-showroom.css');
+  $brassJavascriptUrl = $frontendAssetUrls['javascript'] ?? asset('vendor/brass-showroom/brass-showroom.js');
 @endphp
+<link rel="stylesheet" href="{{ $brassStylesheetUrl }}">
 <section id="brass-showroom" class="bs-root" data-assets-base="{{ asset('vendor/brass-showroom/images') }}" data-inline-config="{{ $encodedShowroomConfig }}" aria-label="ကြေးဝါအနုပညာပြခန်း">
   <div class="bs-room" data-bs-room role="img" aria-label="လှည့်လည်ကြည့်ရှုနိုင်သော 3D ပြခန်း"></div>
 
@@ -66,4 +69,4 @@
   <noscript><p class="bs-noscript">This virtual showroom requires JavaScript. / ဤပြခန်းအတွက် JavaScript လိုအပ်ပါသည်။</p></noscript>
 </section>
 
-<script defer src="{{ asset('vendor/brass-showroom/brass-showroom.js') }}"></script>
+<script defer src="{{ $brassJavascriptUrl }}"></script>

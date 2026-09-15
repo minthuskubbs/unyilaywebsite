@@ -23,4 +23,12 @@ final class BrassShowroomAuthorization
 
         return $idAllowed || ($email !== '' && in_array($email, $emails, true));
     }
+
+    public static function allowsFrontendDeploy(?Authenticatable $user): bool
+    {
+        return config('brass-showroom.frontend_deploy_enabled', false)
+            && self::allows($user)
+            && method_exists($user, 'tokenCan')
+            && $user->tokenCan('showroom:deploy');
+    }
 }

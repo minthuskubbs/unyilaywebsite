@@ -9,7 +9,7 @@ class BrassShowroom extends Model
 {
     protected $fillable = [
         'key', 'published_config', 'draft_config', 'published_revision',
-        'draft_revision', 'published_at', 'draft_updated_at', 'updated_by',
+        'draft_revision', 'published_at', 'draft_updated_at', 'updated_by', 'frontend_release_id',
     ];
 
     protected $casts = [
