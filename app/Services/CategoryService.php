@@ -88,7 +88,7 @@ class CategoryService
                     'key' => 'brass',
                     'name' => 'Brass',
                     'description' => 'The beauty of brass. Step inside. Take your time. Discover six works of Myanmar craftsmanship.',
-                    'url' => 'http://localhost:8000/brass',
+                    'url' => url('/brass'),
                     'image' => asset('images/menu/brass.png'),
                     'categories' => [],
                     'popular_product' => null,

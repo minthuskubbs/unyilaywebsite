@@ -10,7 +10,7 @@
                     <span class="unyl-btn">Shop Now</span>
                 </div>
             </a>
-            <a href="http://localhost:8000/brass" class="unyl-hcard unyl-hcard--sm unyl-hcard--brass" style="--bg-desktop:url('https://unyilaysilver.com/wp-content/uploads/2026/08/Mask-group-1.png'); --bg-mobile:url('https://unyilaysilver.com/wp-content/uploads/2026/08/Product-Card-Big-Items-3.png')">
+            <a href="{{ url('/brass') }}" class="unyl-hcard unyl-hcard--sm unyl-hcard--brass" style="--bg-desktop:url('https://unyilaysilver.com/wp-content/uploads/2026/08/Mask-group-1.png'); --bg-mobile:url('https://unyilaysilver.com/wp-content/uploads/2026/08/Product-Card-Big-Items-3.png')">
                 <div class="unyl-hcard__cap">
                     <h3>Brass</h3>
                     <p>Experience masterful craftsmanship combined with accessible elegance.</p>
