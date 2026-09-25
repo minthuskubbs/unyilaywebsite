@@ -11,6 +11,10 @@
         <meta name="description" content="{{ $description }}">
     @endif
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Karla:wght@400;500;600&display=swap">
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body @class([$bodyClass])>
