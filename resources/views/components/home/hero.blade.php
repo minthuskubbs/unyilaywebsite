@@ -1,8 +1,8 @@
 <section class="unyl-hero">
     <div class="unyl-hero__media">
         <picture>
-            <source media="(max-width: 768px)" srcset="{{ asset('images/home/hero-banner-mobile.png') }}" />
-            <img src="{{ asset('images/home/hero-banner-latest.png') }}" alt="Myanmar Silver & Jewelry" />
+            <source media="(max-width: 768px)" srcset="{{ asset('images/home/hero-banner-mobile.jpg') }}" />
+            <img src="{{ asset('images/home/hero-banner-latest.jpg') }}" alt="Myanmar Silver & Jewelry" fetchpriority="high" />
         </picture>
     </div>
     <div class="unyl-hero__container">
