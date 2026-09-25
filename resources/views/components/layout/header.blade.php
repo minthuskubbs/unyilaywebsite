@@ -3,7 +3,7 @@
 <header class="site-header">
     <div class="site-header__inner">
         <a href="{{ url('/') }}" class="site-header__logo">
-            <img src="https://unyilaysilver.com/wp-content/uploads/2021/07/unyilay-logo.png" alt="U Nyi Lay Silver Shop" />
+            <img src="{{ asset('images/brand/unyilay-logo.png') }}" alt="U Nyi Lay Silver Shop" />
         </a>
 
         <ul class="site-header__nav">
@@ -144,7 +144,7 @@
 <div class="unyl-menu-mobile" id="unylMobileMenu">
     <div class="unyl-menu-mobile-header">
         <a href="{{ url('/') }}" class="unyl-menu-mobile-logo">
-            <img src="https://unyilaysilver.com/wp-content/uploads/2021/07/unyilay-logo.png" alt="U Nyi Lay Silver Shop" />
+            <img src="{{ asset('images/brand/unyilay-logo.png') }}" alt="U Nyi Lay Silver Shop" />
         </a>
         <button type="button" class="unyl-menu-mobile-close" aria-label="Close menu">&times;</button>
     </div>
