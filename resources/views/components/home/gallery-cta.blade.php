@@ -1,7 +1,7 @@
 <section class="unyl-gallery-cta">
     <div class="unyl-gallery-cta__text">
         <h2>Every corner turn into art like never before</h2>
-        <p>The base of a painting does not always have to be a canvas. There are also handcrafted works of art on precious metals.</p>
+        <p>Who says art only belongs on canvas? True masterpieces can also be forged by hand on the canvas of precious metal.</p>
         <div class="unyl-gallery-cta__actions">
             <a href="{{ url('/product-category/picture') }}" class="unyl-btn">Explore Silver</a>
             <a href="{{ url('/product-category/brass-pictures') }}" class="unyl-btn unyl-btn--dark">Explore Brass</a>

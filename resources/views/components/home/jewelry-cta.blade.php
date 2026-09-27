@@ -4,7 +4,7 @@
     </div>
     <div class="unyl-jewelry-cta__text">
         <h2>A truly elegant taste around you</h2>
-        <p>Surrounded by your cherished ones, exquisite silver jewelry and treasured memories will shine beautifully.</p>
+        <p>Surrounded by those you love, exquisite silver jewelry and treasured memories will forever shine in perfect harmony.</p>
         <a href="{{ url('/product-category/silver-jewelry') }}" class="unyl-btn">Explore More</a>
     </div>
 </section>
