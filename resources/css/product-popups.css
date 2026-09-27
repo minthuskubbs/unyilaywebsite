@@ -22,8 +22,12 @@ body.theme-light .unyl-popup-trigger:hover { background: rgba(0, 0, 0, 0.08); }
     position: fixed;
     inset: 0;
     z-index: 500;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    box-sizing: border-box;
 }
-.unyl-popup-modal.is-open { display: block; }
+.unyl-popup-modal.is-open { display: flex; }
 .unyl-popup-modal__overlay { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.6); }
 .unyl-popup-modal__panel {
     position: relative;
@@ -33,7 +37,7 @@ body.theme-light .unyl-popup-trigger:hover { background: rgba(0, 0, 0, 0.08); }
     max-width: 700px;
     width: 90%;
     max-height: 85vh;
-    margin: 6vh auto;
+    margin: 0;
     border-radius: 10px;
     overflow: hidden;
     display: flex;
@@ -85,5 +89,6 @@ body.theme-light .unyl-popup-trigger:hover { background: rgba(0, 0, 0, 0.08); }
 .unyl-popup-richtext ul { padding-left: 20px; margin: 0 0 12px; }
 
 @media (max-width: 600px) {
-    .unyl-popup-modal__panel { width: 95%; margin: 20px auto; max-height: 90vh; }
+    .unyl-popup-modal { padding: 12px; }
+    .unyl-popup-modal__panel { width: 100%; margin: 0; max-height: 90vh; }
 }

@@ -2,7 +2,7 @@
     <div class="unyl-shop">
         <div class="unyl-shop__header">
             <x-shop.breadcrumb :breadcrumbs="$breadcrumbs" :current="$title" :hide-on-mobile="true" />
-            <h1 class="unyl-shop__title">{{ $category['name'] }}</h1>
+            <h1 class="unyl-shop__title">{{ preg_replace('/\s*\(silver jewelry\)\s*$/i', '', $category['name']) }}</h1>
         </div>
 
         <div class="unyl-category-tiles">

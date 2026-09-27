@@ -5,7 +5,7 @@
         <div class="unyl-heritage__col">
             <a href="{{ url('/shop') }}" class="unyl-hcard unyl-hcard--lg unyl-hcard--big-items" style="--bg-desktop:url('{{ asset('images/home/big-items-block.jpg') }}'); --bg-mobile:url('{{ asset('images/home/big-items-block.jpg') }}')">
                 <div class="unyl-hcard__cap">
-                    <h3>Big Items</h3>
+                    <h3>Big Items (Silver)</h3>
                     <p>Our premium silverware is perfect for gifts and decorative purposes.</p>
                     <span class="unyl-btn">Shop Now</span>
                 </div>

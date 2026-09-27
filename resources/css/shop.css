@@ -179,6 +179,18 @@ body.theme-light .unyl-pagination a.is-active { background: #1a1a1a; color: #fff
 .unyl-pagination a:hover { background: var(--unyl-card); color: var(--unyl-text); }
 .unyl-pagination a.is-active { background: var(--unyl-text); color: var(--unyl-bg); }
 
+@media (max-width: 600px) {
+    .unyl-pagination {
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        gap: 6px;
+        padding-bottom: 8px;
+    }
+    .unyl-pagination a { min-width: 32px; height: 32px; font-size: 13px; flex-shrink: 0; }
+}
+
 /* ===== Category index tiles (e.g. Jewelry) ===== */
 .unyl-category-tiles {
     display: grid;

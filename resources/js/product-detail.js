@@ -46,6 +46,30 @@ function initVariations() {
     const basePrice = priceEl ? priceEl.textContent : '';
     const mainImg = document.getElementById('productMainImageTag');
     const defaultImage = mainImg ? mainImg.src : null;
+    const skuStockEl = document.getElementById('productSkuStock');
+    const skuWrapEl = document.getElementById('productSkuWrap');
+    const skuValueEl = document.getElementById('productSkuValue');
+    const stockValueEl = document.getElementById('productStockValue');
+    const baseSku = skuStockEl?.dataset.baseSku || '';
+    const baseStockStatus = skuStockEl?.dataset.baseStockStatus || 'instock';
+    const baseStockQuantity = skuStockEl?.dataset.baseStockQuantity || '';
+
+    function stockText(stockStatus, stockQuantity) {
+        if (stockStatus !== 'instock') return 'Out of stock';
+        return stockQuantity ? `${stockQuantity} in stock` : 'In stock';
+    }
+
+    function updateSkuStock(sku, stockStatus, stockQuantity) {
+        if (!skuStockEl) return;
+        const resolvedSku = sku || baseSku;
+        if (skuWrapEl) skuWrapEl.style.display = resolvedSku ? '' : 'none';
+        if (skuValueEl) skuValueEl.textContent = resolvedSku;
+        if (stockValueEl) {
+            stockValueEl.textContent = stockText(stockStatus, stockQuantity);
+            stockValueEl.classList.toggle('in-stock', stockStatus === 'instock');
+            stockValueEl.classList.toggle('out-of-stock', stockStatus !== 'instock');
+        }
+    }
 
     function currentSelection() {
         const selection = {};
@@ -79,6 +103,7 @@ function initVariations() {
             if (addToCartBtn) addToCartBtn.disabled = true;
             if (priceEl) priceEl.textContent = basePrice;
             if (mainImg && defaultImage) mainImg.src = defaultImage;
+            updateSkuStock(baseSku, baseStockStatus, baseStockQuantity);
             return;
         }
 
@@ -94,6 +119,7 @@ function initVariations() {
         if (addToCartBtn) addToCartBtn.disabled = match.stock_status !== 'instock';
         if (priceEl) priceEl.textContent = match.stock_status === 'instock' ? formatPrice(match.price) : 'Out of stock';
         if (mainImg) mainImg.src = match.image || defaultImage;
+        updateSkuStock(match.sku, match.stock_status, match.stock_quantity);
     }
 
     selects.forEach((select) => select.addEventListener('change', update));

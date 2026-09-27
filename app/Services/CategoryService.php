@@ -104,7 +104,7 @@ class CategoryService
             return [
                 [
                     'key' => 'big-items',
-                    'name' => 'Big Items',
+                    'name' => 'Big Items (Silver)',
                     'description' => 'Our premium silverware is perfect for gifts and decorative purposes.',
                     'url' => url('/shop'),
                     'image' => asset('images/menu/big-items-thumbnail.webp'),
@@ -112,6 +112,7 @@ class CategoryService
                     'categories' => $bigItemsCategories->map(fn ($t) => ['term_id' => $t->term_id, 'name' => $t->name, 'slug' => $t->slug])->all(),
                     'popular_product' => $this->representativeProductAcrossCategories($bigItemsIds, 'popular'),
                     'new_product' => $this->representativeProductAcrossCategories($bigItemsIds, 'new'),
+                    'new_products' => $this->newestProductsAcrossCategories($bigItemsIds, 2),
                 ],
                 [
                     'key' => 'jewelry-silver',
@@ -123,6 +124,7 @@ class CategoryService
                     'categories' => $jewelryCategories->map(fn ($t) => ['term_id' => $t->term_id, 'name' => $t->name, 'slug' => $t->slug])->all(),
                     'popular_product' => $this->representativeProductAcrossCategories($jewelryIds, 'popular'),
                     'new_product' => $this->representativeProductAcrossCategories($jewelryIds, 'new'),
+                    'new_products' => $this->newestProductsAcrossCategories($jewelryIds, 2),
                 ],
                 [
                     'key' => 'brass',
@@ -414,5 +416,44 @@ class CategoryService
             'slug' => $row->post_name,
             'image' => $image,
         ];
+    }
+
+    /**
+     * The newest $limit products across a whole set of categories combined —
+     * used for the mobile mega-menu's "New" square blocks, where more than
+     * one item is shown at once (unlike the single desktop teaser).
+     */
+    private function newestProductsAcrossCategories(array $termIds, int $limit): array
+    {
+        if (empty($termIds)) {
+            return [];
+        }
+
+        $rows = DB::connection('wordpress')
+            ->table('term_relationships as tr')
+            ->join('term_taxonomy as tt', 'tr.term_taxonomy_id', '=', 'tt.term_taxonomy_id')
+            ->join('posts as p', 'tr.object_id', '=', 'p.ID')
+            ->whereIn('tt.term_id', $termIds)
+            ->where('tt.taxonomy', 'product_cat')
+            ->where('p.post_type', 'product')
+            ->where('p.post_status', 'publish')
+            ->select('p.ID as product_id', 'p.post_title', 'p.post_name')
+            ->distinct()
+            ->orderByDesc('p.post_date')
+            ->limit($limit)
+            ->get();
+
+        if ($rows->isEmpty()) {
+            return [];
+        }
+
+        $images = app(ProductImageResolver::class)->urlsForProducts($rows->pluck('product_id')->all());
+
+        return $rows->map(fn ($row) => [
+            'id' => $row->product_id,
+            'name' => $row->post_title,
+            'slug' => $row->post_name,
+            'image' => $images[$row->product_id] ?? null,
+        ])->all();
     }
 }

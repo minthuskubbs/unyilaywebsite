@@ -7,6 +7,15 @@
                 @if (count($product['images']))
                     <div class="unyl-product__main-image">
                         <img src="{{ $product['images'][0] }}" alt="{{ $product['name'] }}" id="productMainImageTag" />
+                        <button
+                            type="button"
+                            class="unyl-product__wishlist unyl-product__wishlist--overlay {{ app(\App\Services\WishlistService::class)->has($product['id']) ? 'is-active' : '' }}"
+                            data-wishlist-toggle
+                            data-product-id="{{ $product['id'] }}"
+                            aria-label="Add to wishlist"
+                        >
+                            <svg viewBox="0 0 21 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3806 17.7283L2.22677 10.6088C-2.20469 6.3371 4.30956 -1.86456 10.3806 4.77081C16.4518 -1.86456 22.9365 6.36558 18.5345 10.6088L10.3806 17.7283Z"/></svg>
+                        </button>
                     </div>
                     @if (count($product['images']) > 1)
                         <div class="unyl-product__thumbs">
@@ -98,11 +107,17 @@
                                 <button type="button" class="unyl-popup-modal__close" data-modal-close aria-label="Close">&times;</button>
                             </div>
                             <div class="unyl-popup-modal__body">
+                                @php
+                                    $variationAttrLabel = collect($product['attributes'])
+                                        ->filter(fn ($attr) => !empty($attr['is_variation']))
+                                        ->pluck('label')
+                                        ->implode(' / ');
+                                @endphp
                                 <div class="unyl-popup-table-scroll">
                                     <table class="unyl-popup-table">
                                         <thead>
                                             <tr>
-                                                <th>Name</th>
+                                                <th>{{ $variationAttrLabel !== '' ? $variationAttrLabel : 'Size' }}</th>
                                                 <th>Price</th>
                                             </tr>
                                         </thead>
@@ -112,8 +127,8 @@
                                                     $parts = [];
                                                     foreach ($variation['attributes'] as $taxonomy => $value) {
                                                         if ($value === '') continue;
-                                                        $label = trim(str_replace(['pa_', '-', '_'], ['', ' ', ' '], strtolower($taxonomy)));
-                                                        $parts[] = $label . ': ' . $value;
+                                                        $termName = collect($product['attributes'][$taxonomy]['terms'] ?? [])->firstWhere('slug', $value)['name'] ?? $value;
+                                                        $parts[] = $termName;
                                                     }
                                                     $rowName = implode(', ', $parts);
                                                 @endphp
@@ -157,6 +172,23 @@
                         @endforeach
                     @endif
 
+                    <div
+                        class="unyl-product__sku-stock"
+                        id="productSkuStock"
+                        data-base-sku="{{ $product['sku'] }}"
+                        data-base-stock-status="{{ $product['stock_status'] }}"
+                        data-base-stock-quantity="{{ $product['stock_quantity'] }}"
+                    >
+                        <span class="unyl-product__sku" id="productSkuWrap" @if (!$product['sku']) style="display:none" @endif>SKU: <span id="productSkuValue">{{ $product['sku'] }}</span></span>
+                        <span class="unyl-product__stock {{ $product['stock_status'] === 'instock' ? 'in-stock' : 'out-of-stock' }}" id="productStockValue">
+                            @if ($product['stock_status'] === 'instock')
+                                {{ $product['stock_quantity'] !== null ? $product['stock_quantity'] . ' in stock' : 'In stock' }}
+                            @else
+                                Out of stock
+                            @endif
+                        </span>
+                    </div>
+
                     <div class="unyl-product__qty-row">
                         <div class="unyl-qty">
                             <button type="button" class="unyl-qty__btn" data-action="minus" aria-label="Decrease quantity">-</button>
@@ -164,15 +196,6 @@
                             <button type="button" class="unyl-qty__btn" data-action="plus" aria-label="Increase quantity">+</button>
                         </div>
                         <button type="submit" class="unyl-medium-btn" id="addToCartBtn" {{ $product['type'] === 'variable' ? 'disabled' : '' }}>Add to cart</button>
-                        <button
-                            type="button"
-                            class="unyl-product__wishlist {{ app(\App\Services\WishlistService::class)->has($product['id']) ? 'is-active' : '' }}"
-                            data-wishlist-toggle
-                            data-product-id="{{ $product['id'] }}"
-                            aria-label="Add to wishlist"
-                        >
-                            <svg viewBox="0 0 21 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3806 17.7283L2.22677 10.6088C-2.20469 6.3371 4.30956 -1.86456 10.3806 4.77081C16.4518 -1.86456 22.9365 6.36558 18.5345 10.6088L10.3806 17.7283Z"/></svg>
-                        </button>
                     </div>
 
                     <input type="hidden" name="product_id" value="{{ $product['id'] }}" />

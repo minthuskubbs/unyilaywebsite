@@ -3,6 +3,8 @@
 .unyl-auth__card { width: 100%; max-width: 420px; background: var(--unyl-card); border-radius: 16px; padding: 40px; }
 .unyl-auth__card h1 { font-family: var(--font-serif); font-weight: 400; font-size: 28px; margin: 0 0 24px; text-align: center; }
 .unyl-auth__submit { display: block; width: 100%; box-sizing: border-box; text-align: center; margin-top: 6px; }
+.unyl-auth__switch { text-align: center; font-family: var(--font-sans); font-size: 14px; color: var(--unyl-text-dim); margin: 20px 0 0; }
+.unyl-auth__switch a { color: var(--unyl-text); text-decoration: underline; }
 
 /* ===== Account ===== */
 .unyl-account { padding: 130px 6vw 100px; max-width: 1000px; margin: 0 auto; }

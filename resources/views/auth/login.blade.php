@@ -19,6 +19,8 @@
                 </div>
                 <button type="submit" class="unyl-btn unyl-auth__submit">Log in</button>
             </form>
+
+            <p class="unyl-auth__switch">Don't have an account? <a href="{{ route('register') }}">Register</a></p>
         </div>
     </div>
 </x-layouts.app>

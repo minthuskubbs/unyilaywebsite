@@ -180,31 +180,51 @@
             <div class="unyl-menu-mobile-header">
                 <button type="button" class="unyl-menu-mobile-back" aria-label="Back">&larr;</button>
                 <span class="unyl-menu-mobile-title">{{ $group['name'] }}</span>
-                <button type="button" class="unyl-menu-mobile-close" aria-label="Close menu">&times;</button>
             </div>
 
             @if ($group['key'] === 'brass')
                 <a class="unyl-menu-gallery-link" href="{{ url('/brass') }}">Brass Art Gallery</a>
             @endif
 
-            <div class="unyl-menu-mobile-teasers">
-                @if ($group['popular_product'])
-                    <a class="unyl-menu-card" href="{{ url('/product/' . $group['popular_product']['slug']) }}">
-                        <span class="unyl-menu-card__label">Popular</span>
-                        @if ($group['popular_product']['image'])
-                            <img src="{{ $group['popular_product']['image'] }}" alt="" loading="lazy" />
-                        @endif
-                    </a>
+            @if (in_array($group['key'], ['big-items', 'jewelry-silver', 'brass'], true))
+                <a class="unyl-menu-card unyl-menu-card--all unyl-menu-mobile-all" href="{{ $group['url'] }}">
+                    <span class="unyl-menu-card__label">All Items</span>
+                    @if ($group['card_image'] ?? $group['image'])
+                        <img src="{{ $group['card_image'] ?? $group['image'] }}" alt="" loading="lazy" />
+                    @endif
+                </a>
+                @if (!empty($group['new_products']))
+                    <div class="unyl-menu-mobile-new-grid">
+                        @foreach ($group['new_products'] as $product)
+                            <a class="unyl-menu-card" href="{{ url('/product/' . $product['slug']) }}">
+                                <span class="unyl-menu-card__label">New</span>
+                                @if ($product['image'])
+                                    <img src="{{ $product['image'] }}" alt="" loading="lazy" />
+                                @endif
+                            </a>
+                        @endforeach
+                    </div>
                 @endif
-                @if ($group['new_product'])
-                    <a class="unyl-menu-card" href="{{ url('/product/' . $group['new_product']['slug']) }}">
-                        <span class="unyl-menu-card__label">New Items</span>
-                        @if ($group['new_product']['image'])
-                            <img src="{{ $group['new_product']['image'] }}" alt="" loading="lazy" />
-                        @endif
-                    </a>
-                @endif
-            </div>
+            @else
+                <div class="unyl-menu-mobile-teasers">
+                    @if ($group['popular_product'])
+                        <a class="unyl-menu-card" href="{{ url('/product/' . $group['popular_product']['slug']) }}">
+                            <span class="unyl-menu-card__label">Popular</span>
+                            @if ($group['popular_product']['image'])
+                                <img src="{{ $group['popular_product']['image'] }}" alt="" loading="lazy" />
+                            @endif
+                        </a>
+                    @endif
+                    @if ($group['new_product'])
+                        <a class="unyl-menu-card" href="{{ url('/product/' . $group['new_product']['slug']) }}">
+                            <span class="unyl-menu-card__label">New Items</span>
+                            @if ($group['new_product']['image'])
+                                <img src="{{ $group['new_product']['image'] }}" alt="" loading="lazy" />
+                            @endif
+                        </a>
+                    @endif
+                </div>
+            @endif
 
             <div class="unyl-menu-mobile-categories">
                 <span class="unyl-menu-mobile-categories__label">Categories</span>

@@ -160,6 +160,32 @@ class WooCommerceService
         return $response->successful() ? $response->json() : [];
     }
 
+    /**
+     * Creates a real WordPress user (with the "customer" role) via the
+     * WooCommerce REST API, so WordPress's own wp_insert_user() handles
+     * password hashing correctly — same reasoning as WordPressAuthService
+     * not reimplementing WP's hash scheme by hand.
+     *
+     * @return array{success: bool, customer: array|null, error: string|null}
+     */
+    public function createCustomer(array $data): array
+    {
+        try {
+            $response = $this->client()->post($this->endpoint('customers'), $data);
+        } catch (\Throwable $e) {
+            Log::error('WooCommerce customer creation failed to connect', ['exception' => $e->getMessage()]);
+            return ['success' => false, 'customer' => null, 'error' => 'Could not reach the account system. Please try again shortly.'];
+        }
+
+        if (!$response->successful()) {
+            Log::error('WooCommerce customer creation failed', ['status' => $response->status(), 'body' => $response->body()]);
+            $message = $response->json('message') ?? 'The account could not be created. Please try again.';
+            return ['success' => false, 'customer' => null, 'error' => $message];
+        }
+
+        return ['success' => true, 'customer' => $response->json(), 'error' => null];
+    }
+
     public function updateCustomer(int $id, array $data): array
     {
         $response = $this->client()->put($this->endpoint("customers/{$id}"), $data);

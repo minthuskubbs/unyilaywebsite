@@ -384,6 +384,7 @@
     border: none;
 }
 .unyl-menu-mobile-title { font-family: var(--font-serif); font-size: 18px; color: var(--unyl-text); }
+.unyl-menu-mobile-detail .unyl-menu-mobile-header { justify-content: flex-start; gap: 16px; }
 .unyl-menu-mobile-list,
 .unyl-menu-mobile-detail {
     position: absolute;
@@ -457,6 +458,9 @@
     border-bottom: 1px solid rgba(242, 242, 242, 0.1);
 }
 .unyl-menu-mobile-teasers { display: flex; flex-direction: column; gap: 16px; margin-top: 20px; }
+.unyl-menu-mobile-all { display: block; margin-top: 20px; }
+.unyl-menu-mobile-new-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+.unyl-menu-mobile-new-grid .unyl-menu-card { min-height: 0; aspect-ratio: 1 / 1; }
 .unyl-menu-mobile-categories { display: flex; flex-direction: column; gap: 2px; margin-top: 28px; }
 .unyl-menu-mobile-categories__label {
     font-family: var(--font-sans);
