@@ -48,10 +48,11 @@ img { max-width: 100%; }
     padding: 20px 24px;
     transition: opacity .25s ease;
     cursor: pointer;
-    min-width: 160px;
+    min-width: 130px;
     text-align: center;
     height: 63px;
     margin-bottom: 20px;
+    max-width: 160px;
 }
 .unyl-btn:hover { opacity: 0.85; }
 .unyl-btn--sm {

@@ -120,7 +120,7 @@
     display: flex;
     flex-direction: column;
     justify-content: start;
-    max-width: 255px;
+    max-width: 335px;
 }
 .unyl-hcard__cap h3 { font-family: var(--font-serif); font-size: clamp(1.4rem, 3vw, 36px); line-height: 1.2; font-weight: 400; margin: 0 0 6px; }
 .unyl-hcard__cap p { font-family: var(--font-sans); font-size: 18px; line-height: 1.4; color: rgba(242, 242, 242, 0.85); margin: 0 0 16px; }
