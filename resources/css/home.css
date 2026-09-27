@@ -137,6 +137,7 @@
     .unyl-hcard--jewelry { order: 2; }
     .unyl-hcard--brass { order: 3; }
     .unyl-hcard--quote { display: none; }
+    .unyl-hcard__cap h3 { text-decoration: underline; text-underline-offset: 6px; }
 }
 
 /* ===== Timeline ===== */
