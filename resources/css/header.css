@@ -287,9 +287,7 @@
     top: 12px;
     left: 12px;
     z-index: 2;
-    background: rgba(10, 10, 10, 0.35);
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(3px);
+    background: rgba(10, 10, 10, 0.65);
     padding: 6px 14px;
     border-radius: 999px;
     font-family: var(--font-sans);
@@ -306,7 +304,9 @@
 }
 [data-unyl-stage2="jewelry-silver"] .unyl-menu-card__label,
 [data-unyl-detail="jewelry-silver"] .unyl-menu-card__label {
-    background: rgba(255, 255, 255, 0.12);
+    background: rgba(207, 207, 207, 0.4);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
     color: #1a1a1a;
 }
 .unyl-menu-gallery-link {
