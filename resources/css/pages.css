@@ -86,6 +86,7 @@
     padding: 70px 6vw;
 }
 .unyl-contact__col { display: flex; flex-direction: column; }
+.unyl-contact__col:nth-child(2) { align-items: center; text-align: center; }
 .unyl-contact__col h4 { font-family: var(--font-serif); font-weight: 400; font-size: 22px; margin: 0 0 16px; }
 .unyl-contact__col a { font-family: var(--font-sans); font-size: 15px; color: var(--unyl-text-dim); text-decoration: none; margin-bottom: 2px; }
 .unyl-contact__col a:hover { color: var(--unyl-text); }

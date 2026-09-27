@@ -170,8 +170,10 @@
 
         <div class="unyl-menu-mobile-links">
             <a href="{{ url('/about-us') }}">About us</a>
+            <a href="{{ url('/wishlist') }}">Wishlist</a>
             <a href="{{ url('/news-articles') }}">News &amp; Articles</a>
             <a href="{{ url('/contact-us') }}">Contact Us</a>
+            <a href="{{ session('customer') ? url('/my-account') : url('/login') }}">My Account</a>
         </div>
     </div>
 

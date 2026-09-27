@@ -45,7 +45,7 @@ img { max-width: 100%; }
     background: var(--unyl-btn-bg);
     border: none;
     border-radius: 999px;
-    padding: 20px 24px;
+    padding: 20px 18px;
     transition: opacity .25s ease;
     cursor: pointer;
     min-width: 130px;
