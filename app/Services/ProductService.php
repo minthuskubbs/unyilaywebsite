@@ -94,7 +94,7 @@ class ProductService
                 'type' => $type,
                 'price' => $price,
                 'stock_status' => $meta->get('_stock_status', 'instock'),
-                'stock_quantity' => $meta->get('_stock_quantity') !== null ? (int) $meta->get('_stock_quantity') : null,
+                'stock_quantity' => $meta->get('_stock') !== null ? (int) $meta->get('_stock') : null,
                 'categories' => $categories,
                 'attributes' => $attributes,
                 'variations' => $variations,
@@ -242,7 +242,7 @@ class ProductService
                 'price' => $rows->get('_price', $rows->get('_regular_price')),
                 'stock_status' => $rows->get('_stock_status', 'instock'),
                 'sku' => $rows->get('_sku') ?: null,
-                'stock_quantity' => $rows->get('_stock_quantity') !== null ? (int) $rows->get('_stock_quantity') : null,
+                'stock_quantity' => $rows->get('_stock') !== null ? (int) $rows->get('_stock') : null,
                 'attributes' => $attributes,
                 'image' => $thumbId ? ($variationImages[$thumbId] ?? null) : null,
             ];

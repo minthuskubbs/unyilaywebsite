@@ -154,6 +154,10 @@
                 <form class="unyl-product__form" id="productForm" method="POST" action="{{ url('/cart/add') }}" data-variations="{{ json_encode($product['variations']) }}">
                     @csrf
 
+                    @php
+                        $isRingsProduct = collect($product['categories'])->contains('slug', 'rings');
+                    @endphp
+
                     @if ($product['type'] === 'variable')
                         @foreach ($product['attributes'] as $taxonomy => $attr)
                             {{-- Non-variation attributes (is_variation: false) are informational only
@@ -162,12 +166,20 @@
                             @continue(empty($attr['is_variation']))
                             <div class="unyl-product__attr">
                                 <label for="attr-{{ $taxonomy }}">{{ $attr['label'] }}</label>
-                                <select id="attr-{{ $taxonomy }}" class="unyl-product__select" name="attributes[{{ $taxonomy }}]" data-attribute="{{ $taxonomy }}">
+                                <select id="attr-{{ $taxonomy }}" class="unyl-product__select {{ $isRingsProduct ? 'unyl-product__select--hidden' : '' }}" name="attributes[{{ $taxonomy }}]" data-attribute="{{ $taxonomy }}">
                                     <option value="">Choose an option</option>
                                     @foreach ($attr['terms'] as $term)
                                         <option value="{{ $term['slug'] }}">{{ $term['name'] }}</option>
                                     @endforeach
                                 </select>
+
+                                @if ($isRingsProduct)
+                                    <div class="unyl-product__option-group" data-option-target="attr-{{ $taxonomy }}">
+                                        @foreach ($attr['terms'] as $term)
+                                            <button type="button" class="unyl-product__option-btn" data-option-value="{{ $term['slug'] }}">{{ $term['name'] }}</button>
+                                        @endforeach
+                                    </div>
+                                @endif
                             </div>
                         @endforeach
                     @endif

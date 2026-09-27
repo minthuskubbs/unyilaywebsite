@@ -123,5 +123,26 @@ function initVariations() {
     }
 
     selects.forEach((select) => select.addEventListener('change', update));
+    initOptionGroups(form);
     update();
+}
+
+// Rounded-box option buttons (used on ring variation pickers) proxy their
+// selection into the underlying (visually hidden) <select> and fire its
+// change event, so all the price/stock/SKU logic above stays untouched.
+function initOptionGroups(form) {
+    form.querySelectorAll('.unyl-product__option-group').forEach((group) => {
+        const select = document.getElementById(group.dataset.optionTarget);
+        if (!select) return;
+
+        const buttons = Array.from(group.querySelectorAll('.unyl-product__option-btn'));
+        buttons.forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const isActive = btn.classList.contains('is-active');
+                select.value = isActive ? '' : btn.dataset.optionValue;
+                buttons.forEach((b) => b.classList.toggle('is-active', b === btn && !isActive));
+                select.dispatchEvent(new Event('change'));
+            });
+        });
+    });
 }

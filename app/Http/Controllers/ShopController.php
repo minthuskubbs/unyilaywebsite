@@ -112,13 +112,13 @@ class ShopController extends Controller
         $menuCategories = $this->categories->megaMenuGroups();
 
         $isJewelry = $this->categories->isJewelryCategory($category['term_id']);
-        $isBrassParent = $this->categories->isBrassParent($category['term_id']);
+        $isBrassCategory = $this->categories->isBrassCategory($category['term_id']);
 
         // "Big Items" isn't a real WooCommerce category (it's the virtual
         // grouping of all top-level non-jewelry categories that /shop
         // represents), so it never shows up via ancestors() — prepend it
         // manually as a link back to /shop for non-jewelry breadcrumbs.
-        if (!$isJewelry && !$isBrassParent) {
+        if (!$isJewelry && !$isBrassCategory) {
             array_unshift($breadcrumbs, ['name' => 'Big Items', 'url' => url('/shop')]);
         }
 
@@ -140,7 +140,7 @@ class ShopController extends Controller
             'categories' => $menuCategories,
             'sidebar' => match (true) {
                 $isJewelry => $this->categories->jewelrySidebarTree(),
-                $isBrassParent => $this->categories->brassSidebarTree(),
+                $isBrassCategory => $this->categories->brassSidebarTree(),
                 default => $this->categories->sidebarTree(),
             },
             'breadcrumbs' => [...$breadcrumbs, ['term_id' => $category['term_id'], 'name' => $category['name'], 'slug' => $category['slug']]],

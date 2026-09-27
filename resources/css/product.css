@@ -89,6 +89,26 @@
     font-family: var(--font-sans);
     font-size: 15px;
 }
+.unyl-product__select--hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
+.unyl-product__option-group { display: flex; flex-wrap: wrap; gap: 10px; }
+.unyl-product__option-btn {
+    min-width: 48px;
+    height: 48px;
+    padding: 0 14px;
+    border: 1px solid rgba(242, 242, 242, 0.2);
+    border-radius: 10px;
+    background: #0a0a0a;
+    color: var(--unyl-text);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    cursor: pointer;
+}
+.unyl-product__option-btn:hover { border-color: rgba(242, 242, 242, 0.4); }
+.unyl-product__option-btn.is-active { background: var(--unyl-text); color: var(--unyl-bg); border-color: var(--unyl-text); }
+body.theme-light .unyl-product__option-btn { background: #ffffff; border-color: rgba(0, 0, 0, 0.15); color: #1a1a1a; }
+body.theme-light .unyl-product__option-btn:hover { border-color: rgba(0, 0, 0, 0.3); }
+body.theme-light .unyl-product__option-btn.is-active { background: #1a1a1a; color: #ffffff; border-color: #1a1a1a; }
 
 .unyl-product__qty-row { display: flex; align-items: center; gap: 16px; margin: 24px 0; }
 .unyl-qty {

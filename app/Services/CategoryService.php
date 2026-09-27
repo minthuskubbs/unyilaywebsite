@@ -48,13 +48,12 @@ class CategoryService
         });
     }
 
-    /** True for the brass parent (434) itself — used to give it a flat,
-     * "Big Items"-style product listing instead of the tile-grid page a
-     * category with children normally gets (unlike jewelry's subcategory
-     * grid). */
-    public function isBrassParent(int $termId): bool
+    /** True for the brass parent (434) or any of its subcategories — used
+     * to give leaf brass categories the brass sidebar instead of the
+     * unrelated Big Items one, matching isJewelryCategory()'s pattern. */
+    public function isBrassCategory(int $termId): bool
     {
-        return $termId === self::BRASS_PARENT_ID;
+        return in_array($termId, $this->brassCategoryIds(), true);
     }
 
     /** All brass product category IDs (the parent plus its subcategories) —
@@ -88,7 +87,7 @@ class CategoryService
      * (top-level categories, excluding jewelry/gold-jewelry/brass), Jewelry
      * (Silver) (term 93's children), and Brass (term 434's children) — the
      * "All Items" card for Brass links to a flat product listing across all
-     * brass categories (see isBrassParent()), and its Categories list links
+     * brass categories, and its Categories list links
      * to the real brass subcategory pages like the other two groups.
      */
     public function megaMenuGroups(): array
