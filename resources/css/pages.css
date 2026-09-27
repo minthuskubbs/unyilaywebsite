@@ -107,6 +107,7 @@
 
 @media (max-width: 900px) {
     .unyl-contact__info { grid-template-columns: 1fr; }
+    .unyl-contact__col:nth-child(2) { align-items: flex-start; text-align: left; }
 }
 
 /* ===== News & Articles: listing ===== */
