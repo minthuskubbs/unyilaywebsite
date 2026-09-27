@@ -23,6 +23,7 @@
 /* Collapse the trail into an icon button that reveals a dropdown, so a long
    category path doesn't wrap awkwardly on narrow screens. */
 @media (max-width: 900px) {
+    .unyl-shop__title { text-align: center; }
     .unyl-breadcrumb__trigger {
         display: inline-flex;
         align-items: center;

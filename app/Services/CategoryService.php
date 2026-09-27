@@ -116,7 +116,7 @@ class CategoryService
                 [
                     'key' => 'jewelry-silver',
                     'name' => 'Jewelry (Silver)',
-                    'description' => 'Premium Silverware for gifts and decorations.',
+                    'description' => 'Premium silver jewelry perfect for gifts and everyday fashion.',
                     'url' => url('/product-category/silver-jewelry'),
                     'image' => asset('images/menu/jewelry-thumbnail.jpg'),
                     'card_image' => asset('images/menu/jewelry-all-items.jpg'),
@@ -128,7 +128,7 @@ class CategoryService
                 [
                     'key' => 'brass',
                     'name' => 'Brass',
-                    'description' => 'The beauty of brass. Step inside. Take your time. Discover six works of Myanmar craftsmanship.',
+                    'description' => 'Affordable elegance. Handcrafted brass items perfect for thoughtful gifts.',
                     'url' => url('/brass-shop'),
                     'image' => asset('images/menu/brass-thumbnail.webp'),
                     'card_image' => asset('images/menu/brass-thumbnail.webp'),
