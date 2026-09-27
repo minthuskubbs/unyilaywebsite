@@ -10,7 +10,7 @@
                     <span class="unyl-btn">Shop Now</span>
                 </div>
             </a>
-            <a href="{{ url('/brass') }}" class="unyl-hcard unyl-hcard--sm unyl-hcard--brass" style="--bg-desktop:url('{{ asset('images/home/brass-block.webp') }}'); --bg-mobile:url('{{ asset('images/home/brass-block.webp') }}')">
+            <a href="{{ url('/brass-shop') }}" class="unyl-hcard unyl-hcard--sm unyl-hcard--brass" style="--bg-desktop:url('{{ asset('images/home/brass-block.webp') }}'); --bg-mobile:url('{{ asset('images/home/brass-block.webp') }}')">
                 <div class="unyl-hcard__cap">
                     <h3>Brass</h3>
                     <p>Experience masterful craftsmanship combined with accessible elegance.</p>

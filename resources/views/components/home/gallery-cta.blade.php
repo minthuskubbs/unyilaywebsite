@@ -4,7 +4,7 @@
         <p>The base of a painting does not always have to be a canvas. There are also handcrafted works of art on precious metals.</p>
         <div class="unyl-gallery-cta__actions">
             <a href="{{ url('/product-category/picture') }}" class="unyl-btn">Explore Silver</a>
-            <a href="{{ url('/brass') }}" class="unyl-btn unyl-btn--dark">Explore Brass</a>
+            <a href="{{ url('/product-category/brass-pictures') }}" class="unyl-btn unyl-btn--dark">Explore Brass</a>
         </div>
     </div>
 
