@@ -128,7 +128,16 @@
     .unyl-hcard--jewelry { order: 2; }
     .unyl-hcard--brass { order: 3; }
     .unyl-hcard--quote { display: none; }
-    .unyl-hcard__cap h3 { text-decoration: underline; text-underline-offset: 6px; }
+    .unyl-hcard__cap h3 { position: relative; padding-bottom: 12px; }
+    .unyl-hcard__cap h3::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 70px;
+        height: 1px;
+        background: currentColor;
+    }
 }
 
 /* ===== Timeline ===== */
@@ -219,6 +228,7 @@
     .unyl-statement__mark:last-child { right: 24px; }
     .unyl-statement__text { margin-top: 56px; font-size: clamp(1.4rem, 6vw, 2rem); }
     .unyl-statement__text-extra { display: none; }
+    .unyl-statement__linebreak { display: block; }
 }
 
 /* ===== Jewelry CTA ===== */
