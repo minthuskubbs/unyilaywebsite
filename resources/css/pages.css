@@ -87,7 +87,7 @@
 }
 .unyl-contact__col { display: flex; flex-direction: column; }
 .unyl-contact__col h4 { font-family: var(--font-serif); font-weight: 400; font-size: 22px; margin: 0 0 16px; }
-.unyl-contact__col a { font-family: var(--font-sans); font-size: 15px; color: var(--unyl-text-dim); text-decoration: none; margin-bottom: 8px; }
+.unyl-contact__col a { font-family: var(--font-sans); font-size: 15px; color: var(--unyl-text-dim); text-decoration: none; margin-bottom: 2px; }
 .unyl-contact__col a:hover { color: var(--unyl-text); }
 
 .unyl-contact__form-section { max-width: 700px; margin: 0 auto; padding: 0 6vw 60px; }

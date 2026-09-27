@@ -42,6 +42,26 @@ class ShopController extends Controller
     }
 
     /**
+     * GET /brass-shop — the "Brass" bucket (term 434 plus its subcategories
+     * combined), matching the mega-menu's "Brass" entry. Mirrors /shop's
+     * "Big Items" bucket but scoped to brass instead.
+     */
+    public function brassShop(Request $request)
+    {
+        $page = max(1, (int) $request->query('product-page', 1));
+        $listing = $this->products->paginate($this->categories->brassCategoryIds(), $page);
+
+        return view('shop.archive', [
+            'categories' => $this->categories->megaMenuGroups(),
+            'sidebar' => $this->categories->brassSidebarTree(),
+            'breadcrumbs' => [],
+            'title' => 'Brass',
+            'listing' => $listing,
+            'baseUrl' => url('/brass-shop'),
+        ]);
+    }
+
+    /**
      * GET /search-items — standalone full-page search (as opposed to the
      * header's overlay dropdown): a big centered input matching the
      * overlay's look, with results below once a term is entered, or a
@@ -92,12 +112,13 @@ class ShopController extends Controller
         $menuCategories = $this->categories->megaMenuGroups();
 
         $isJewelry = $this->categories->isJewelryCategory($category['term_id']);
+        $isBrassParent = $this->categories->isBrassParent($category['term_id']);
 
         // "Big Items" isn't a real WooCommerce category (it's the virtual
         // grouping of all top-level non-jewelry categories that /shop
         // represents), so it never shows up via ancestors() — prepend it
         // manually as a link back to /shop for non-jewelry breadcrumbs.
-        if (!$isJewelry) {
+        if (!$isJewelry && !$isBrassParent) {
             array_unshift($breadcrumbs, ['name' => 'Big Items', 'url' => url('/shop')]);
         }
 
@@ -117,7 +138,11 @@ class ShopController extends Controller
 
         return view('shop.archive', [
             'categories' => $menuCategories,
-            'sidebar' => $isJewelry ? $this->categories->jewelrySidebarTree() : $this->categories->sidebarTree(),
+            'sidebar' => match (true) {
+                $isJewelry => $this->categories->jewelrySidebarTree(),
+                $isBrassParent => $this->categories->brassSidebarTree(),
+                default => $this->categories->sidebarTree(),
+            },
             'breadcrumbs' => [...$breadcrumbs, ['term_id' => $category['term_id'], 'name' => $category['name'], 'slug' => $category['slug']]],
             'title' => $category['name'],
             'listing' => $listing,

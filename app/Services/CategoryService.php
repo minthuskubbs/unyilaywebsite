@@ -13,14 +13,15 @@ class CategoryService
 {
     private const JEWELRY_PARENT_ID = 93;
     private const GOLD_JEWELRY_PARENT_ID = 329;
-    private const EXCLUDED_PARENT_IDS = [self::JEWELRY_PARENT_ID, self::GOLD_JEWELRY_PARENT_ID];
+    private const BRASS_PARENT_ID = 434;
+    private const EXCLUDED_PARENT_IDS = [self::JEWELRY_PARENT_ID, self::GOLD_JEWELRY_PARENT_ID, self::BRASS_PARENT_ID];
     private const CACHE_TTL = 900; // 15 minutes — WP changes don't need to be instant here.
 
     /**
-     * The 40 top-level non-jewelry category IDs that make up the "Big Items"
-     * bucket — used both by the mega-menu and by the /shop archive itself,
-     * so "All Items" really shows the same set, not literally every product
-     * (which would also pull in jewelry).
+     * The top-level category IDs (excluding jewelry, gold-jewelry, and brass)
+     * that make up the "Big Items" bucket — used both by the mega-menu and by
+     * the /shop archive itself, so "All Items" really shows the same set, not
+     * literally every product (which would also pull in jewelry/brass).
      */
     public function bigItemsCategoryIds(): array
     {
@@ -47,18 +48,55 @@ class CategoryService
         });
     }
 
+    /** True for the brass parent (434) itself — used to give it a flat,
+     * "Big Items"-style product listing instead of the tile-grid page a
+     * category with children normally gets (unlike jewelry's subcategory
+     * grid). */
+    public function isBrassParent(int $termId): bool
+    {
+        return $termId === self::BRASS_PARENT_ID;
+    }
+
+    /** All brass product category IDs (the parent plus its subcategories) —
+     * used to build the combined "All Items" product listing for brass. */
+    public function brassCategoryIds(): array
+    {
+        return Cache::remember('categories.brass-ids', self::CACHE_TTL, function () {
+            $childIds = $this->termsByParent(self::BRASS_PARENT_ID)->pluck('term_id')->all();
+            return [self::BRASS_PARENT_ID, ...$childIds];
+        });
+    }
+
+    /** Sidebar tree for the brass listing page — brass's own subcategories,
+     * matching the jewelrySidebarTree()/sidebarTree() pattern. */
+    public function brassSidebarTree(): array
+    {
+        return Cache::remember('categories.sidebar.brass', self::CACHE_TTL, function () {
+            $children = $this->termsByParent(self::BRASS_PARENT_ID);
+
+            return $children->map(fn ($term) => [
+                'term_id' => $term->term_id,
+                'name' => $term->name,
+                'slug' => $term->slug,
+                'children' => [],
+            ])->all();
+        });
+    }
+
     /**
      * The mega-menu structure (desktop hover + mobile drill-down): Big Items
-     * (all 40 top-level non-jewelry categories), Jewelry (Silver) (term 93's
-     * children), and Brass — the standalone 3D showroom at /brass, which has
-     * no backing WooCommerce category/products so it links straight out via
-     * "All Items" instead of listing subcategories.
+     * (top-level categories, excluding jewelry/gold-jewelry/brass), Jewelry
+     * (Silver) (term 93's children), and Brass (term 434's children) — the
+     * "All Items" card for Brass links to a flat product listing across all
+     * brass categories (see isBrassParent()), and its Categories list links
+     * to the real brass subcategory pages like the other two groups.
      */
     public function megaMenuGroups(): array
     {
         return Cache::remember('categories.mega-menu', self::CACHE_TTL, function () {
             $bigItemsCategories = $this->termsByParent(0, self::EXCLUDED_PARENT_IDS);
             $jewelryCategories = $this->termsByParent(self::JEWELRY_PARENT_ID);
+            $brassCategories = $this->termsByParent(self::BRASS_PARENT_ID);
 
             $bigItemsIds = $bigItemsCategories->pluck('term_id')->all();
             $jewelryIds = $jewelryCategories->pluck('term_id')->all();
@@ -69,7 +107,8 @@ class CategoryService
                     'name' => 'Big Items',
                     'description' => 'Our premium silverware is perfect for gifts and decorative purposes.',
                     'url' => url('/shop'),
-                    'image' => $this->representativeProductAcrossCategories($bigItemsIds, 'popular')['image'] ?? null,
+                    'image' => asset('images/menu/big-items-thumbnail.webp'),
+                    'card_image' => asset('images/menu/big-items-all-items.jpg'),
                     'categories' => $bigItemsCategories->map(fn ($t) => ['term_id' => $t->term_id, 'name' => $t->name, 'slug' => $t->slug])->all(),
                     'popular_product' => $this->representativeProductAcrossCategories($bigItemsIds, 'popular'),
                     'new_product' => $this->representativeProductAcrossCategories($bigItemsIds, 'new'),
@@ -79,7 +118,8 @@ class CategoryService
                     'name' => 'Jewelry (Silver)',
                     'description' => 'Premium Silverware for gifts and decorations.',
                     'url' => url('/product-category/silver-jewelry'),
-                    'image' => $this->representativeProductAcrossCategories($jewelryIds, 'popular')['image'] ?? null,
+                    'image' => asset('images/menu/jewelry-thumbnail.jpg'),
+                    'card_image' => asset('images/menu/jewelry-all-items.jpg'),
                     'categories' => $jewelryCategories->map(fn ($t) => ['term_id' => $t->term_id, 'name' => $t->name, 'slug' => $t->slug])->all(),
                     'popular_product' => $this->representativeProductAcrossCategories($jewelryIds, 'popular'),
                     'new_product' => $this->representativeProductAcrossCategories($jewelryIds, 'new'),
@@ -88,9 +128,10 @@ class CategoryService
                     'key' => 'brass',
                     'name' => 'Brass',
                     'description' => 'The beauty of brass. Step inside. Take your time. Discover six works of Myanmar craftsmanship.',
-                    'url' => url('/brass'),
-                    'image' => asset('images/menu/brass.webp'),
-                    'categories' => [],
+                    'url' => url('/brass-shop'),
+                    'image' => asset('images/menu/brass-thumbnail.webp'),
+                    'card_image' => asset('images/menu/brass-thumbnail.webp'),
+                    'categories' => $brassCategories->map(fn ($t) => ['term_id' => $t->term_id, 'name' => $t->name, 'slug' => $t->slug])->all(),
                     'popular_product' => null,
                     'new_product' => null,
                 ],
@@ -100,10 +141,10 @@ class CategoryService
 
     /**
      * Full nested category tree (parent=0 top level, one level of children),
-     * used by the /shop ("Big Items") sidebar. Both jewelry parents —
-     * silver-jewelry (93) and gold-jewelry (329) — are excluded, matching
-     * /shop's own product scope (the "Big Items" bucket); jewelry has its
-     * own dedicated section via the mega-menu instead.
+     * used by the /shop ("Big Items") sidebar. Jewelry (93, 329) and brass
+     * (434) parents are excluded, matching /shop's own product scope (the
+     * "Big Items" bucket); jewelry and brass each have their own dedicated
+     * section via the mega-menu instead.
      */
     public function sidebarTree(): array
     {
@@ -294,21 +335,21 @@ class CategoryService
      * same images the live site actually uses.
      */
     private const JEWELRY_CATEGORY_IMAGES = [
-        'necklaces' => 'https://unyilaysilver.com/wp-content/uploads/2021/09/New-Thh-247x296.png',
-        'bracelets' => 'https://unyilaysilver.com/wp-content/uploads/2021/08/Bracelet-Thumbnail-247x296.png',
-        'rings' => 'https://unyilaysilver.com/wp-content/uploads/2021/06/Ring-scaled-247x296.jpg',
-        'bangles' => 'https://unyilaysilver.com/wp-content/uploads/2021/06/Bangle-scaled-247x296.jpg',
-        'dangle-earrings' => 'https://unyilaysilver.com/wp-content/uploads/2021/06/Eardrop-scaled-247x296.jpg',
-        'hoop-earrings' => 'https://unyilaysilver.com/wp-content/uploads/2021/06/Earhoop-scaled-247x296.jpg',
-        'stud-earrings' => 'https://unyilaysilver.com/wp-content/uploads/2021/06/Earring-scaled-247x296.jpg',
-        'cufflinks' => 'https://unyilaysilver.com/wp-content/uploads/2021/06/Cufflink-scaled-247x296.jpg',
-        'pendants' => 'https://unyilaysilver.com/wp-content/uploads/2021/06/Pendent-scaled-247x296.jpg',
-        'box-pendants' => 'https://unyilaysilver.com/wp-content/uploads/2021/08/kyoke-thumbnail-2-247x296.png',
-        'anklets' => 'https://unyilaysilver.com/wp-content/uploads/2021/06/Footchain-scaled-247x296.jpg',
-        'baby-silver' => 'https://unyilaysilver.com/wp-content/uploads/2021/08/Kalay-Thumbnail-247x296.png',
-        'belts' => 'https://unyilaysilver.com/wp-content/uploads/2022/05/IMG_1474-247x296.jpg',
+        'necklaces' => 'images/jewelry/necklaces.jpg',
+        'bracelets' => 'images/jewelry/bracelets.jpg',
+        'rings' => 'images/jewelry/rings.jpg',
+        'bangles' => 'images/jewelry/bangles.jpg',
+        'dangle-earrings' => 'images/jewelry/dangle-earrings.jpg',
+        'hoop-earrings' => 'images/jewelry/hoop-earrings.jpg',
+        'stud-earrings' => 'images/jewelry/stud-earrings.jpg',
+        'cufflinks' => 'images/jewelry/cufflinks.jpg',
+        'pendants' => 'images/jewelry/pendants.jpg',
+        'box-pendants' => 'images/jewelry/box-pendants.jpg',
+        'anklets' => 'images/jewelry/anklets.jpg',
+        'baby-silver' => 'images/jewelry/baby-silver.jpg',
+        'belts' => 'images/jewelry/belts.jpg',
         'toerings' => 'https://unyilaysilver.com/wp-content/uploads/2022/05/IMG_1494-247x296.jpg',
-        'amulets-asaawin' => 'https://unyilaysilver.com/wp-content/uploads/2022/06/286949362_476623100663325_6093239006876295650_n-247x296.jpg',
+        'amulets-asaawin' => 'images/jewelry/amulets-asaawin.jpg',
         'general' => 'https://unyilaysilver.com/wp-content/uploads/2022/06/285940305_712606039973477_7926842476250524608_n-247x296.jpg',
     ];
 
@@ -321,7 +362,9 @@ class CategoryService
             ->value('meta_value');
 
         if (!$attachmentId) {
-            return $slug ? (self::JEWELRY_CATEGORY_IMAGES[$slug] ?? null) : null;
+            $path = $slug ? (self::JEWELRY_CATEGORY_IMAGES[$slug] ?? null) : null;
+
+            return $path && !str_starts_with($path, 'http') ? asset($path) : $path;
         }
 
         return app(ProductImageResolver::class)->urlForAttachment((int) $attachmentId);

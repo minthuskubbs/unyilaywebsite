@@ -13,7 +13,7 @@
                 <h2>A legacy of unmatched quality.</h2>
                 <p>The finest silver crafts that deserve the best.</p>
             </div>
-            <img src="https://unyilaysilver.com/wp-content/uploads/2026/08/Frame-68-1.png" alt="The Art of Pan-Htyan relief" loading="lazy" class="unyl-craft__img--inset" />
+            <img src="{{ asset('images/home/antique-bowl-block.webp') }}" alt="The Art of Pan-Htyan relief" loading="lazy" class="unyl-craft__img--inset" />
             <p class="unyl-craft__note">Recognized as one of country's traditional artistic crafts around 100 BCE to 900 CE.</p>
         </div>
     </div>

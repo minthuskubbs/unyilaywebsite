@@ -98,6 +98,15 @@
 }
 .unyl-hcard--lg { min-height: 425px; }
 .unyl-hcard--sm { min-height: 310px; }
+.unyl-hcard--big-items::before,
+.unyl-hcard--brass::before,
+.unyl-hcard--jewelry::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    pointer-events: none;
+}
 @media (max-width: 768px) {
     .unyl-hcard { background-image: var(--bg-mobile, var(--bg-desktop)); }
 }
@@ -105,6 +114,7 @@
 .unyl-hcard--plain .unyl-hcard__cap { max-width: none; padding: 0; }
 .unyl-hcard__cap {
     position: relative;
+    z-index: 1;
     height: 100%;
     padding: 30px;
     display: flex;
@@ -118,15 +128,15 @@
    Selector needs to out-specificity ".unyl-hcard__cap p" above. */
 .unyl-hcard__cap p.unyl-hcard__lead { font-family: var(--font-serif); font-weight: 400; font-size: clamp(1.4rem, 3vw, 36px); line-height: 1.2; color: var(--unyl-text); margin: 0; max-width: none; }
 @media (max-width: 768px) {
-    /* Mobile Figma order is Big Items -> quote -> Brass -> Silver Jewelry,
-       not the desktop's two-column grouping — unwrap the column divs
-       (display:contents) and reorder the 4 cards directly. */
+    /* Mobile order is Big Items -> Silver Jewelry -> Brass, quote block
+       hidden — unwrap the column divs (display:contents) and reorder
+       the cards directly. */
     .unyl-heritage__grid { display: flex; flex-direction: column; gap: 24px; }
     .unyl-heritage__col { display: contents; }
     .unyl-hcard--big-items { order: 1; }
-    .unyl-hcard--quote { order: 2; }
+    .unyl-hcard--jewelry { order: 2; }
     .unyl-hcard--brass { order: 3; }
-    .unyl-hcard--jewelry { order: 4; }
+    .unyl-hcard--quote { display: none; }
 }
 
 /* ===== Timeline ===== */
@@ -216,6 +226,7 @@
     .unyl-statement__mark:first-child { left: 24px; }
     .unyl-statement__mark:last-child { right: 24px; }
     .unyl-statement__text { margin-top: 56px; font-size: clamp(1.4rem, 6vw, 2rem); }
+    .unyl-statement__text-extra { display: none; }
 }
 
 /* ===== Jewelry CTA ===== */

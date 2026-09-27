@@ -80,10 +80,13 @@
                         <div class="unyl-menu-stage2__middle">
                             <a class="unyl-menu-card unyl-menu-card--all" href="{{ $group['url'] }}">
                                 <span class="unyl-menu-card__label">All Items</span>
-                                @if ($group['image'])
-                                    <img src="{{ $group['image'] }}" alt="" loading="lazy" />
+                                @if ($group['card_image'] ?? $group['image'])
+                                    <img src="{{ $group['card_image'] ?? $group['image'] }}" alt="" loading="lazy" />
                                 @endif
                             </a>
+                            @if ($group['key'] === 'brass')
+                                <a class="unyl-menu-gallery-link" href="{{ url('/brass') }}">Brass Art Gallery</a>
+                            @endif
                             <div class="unyl-menu-stage2__teasers">
                                 @if ($group['popular_product'])
                                     <a class="unyl-menu-card" href="{{ url('/product/' . $group['popular_product']['slug']) }}">
@@ -179,6 +182,10 @@
                 <span class="unyl-menu-mobile-title">{{ $group['name'] }}</span>
                 <button type="button" class="unyl-menu-mobile-close" aria-label="Close menu">&times;</button>
             </div>
+
+            @if ($group['key'] === 'brass')
+                <a class="unyl-menu-gallery-link" href="{{ url('/brass') }}">Brass Art Gallery</a>
+            @endif
 
             <div class="unyl-menu-mobile-teasers">
                 @if ($group['popular_product'])
