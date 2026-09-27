@@ -356,19 +356,26 @@ class CategoryService
 
     private function categoryImage(int $termId, ?string $slug = null): ?string
     {
+        $overridePath = $slug ? (self::JEWELRY_CATEGORY_IMAGES[$slug] ?? null) : null;
+
+        // Curated local photos always win over whatever thumbnail happens to
+        // be set in WordPress for these categories — the client explicitly
+        // provided these to replace the existing category images.
+        if ($overridePath && !str_starts_with($overridePath, 'http')) {
+            return asset($overridePath);
+        }
+
         $attachmentId = DB::connection('wordpress')
             ->table('termmeta')
             ->where('term_id', $termId)
             ->where('meta_key', 'thumbnail_id')
             ->value('meta_value');
 
-        if (!$attachmentId) {
-            $path = $slug ? (self::JEWELRY_CATEGORY_IMAGES[$slug] ?? null) : null;
-
-            return $path && !str_starts_with($path, 'http') ? asset($path) : $path;
+        if ($attachmentId) {
+            return app(ProductImageResolver::class)->urlForAttachment((int) $attachmentId);
         }
 
-        return app(ProductImageResolver::class)->urlForAttachment((int) $attachmentId);
+        return $overridePath;
     }
 
     /**
