@@ -294,6 +294,19 @@
     font-size: 12px;
     color: var(--unyl-text);
 }
+/* Jewelry uses a white theme site-wide, so its own Popular/New/All Items
+   cards in the mega-menu (desktop stage2 panel + mobile detail panel)
+   are white too, regardless of which page the menu is opened from. */
+[data-unyl-stage2="jewelry-silver"] .unyl-menu-card,
+[data-unyl-detail="jewelry-silver"] .unyl-menu-card {
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+[data-unyl-stage2="jewelry-silver"] .unyl-menu-card__label,
+[data-unyl-detail="jewelry-silver"] .unyl-menu-card__label {
+    background: rgba(255, 255, 255, 0.85);
+    color: #1a1a1a;
+}
 .unyl-menu-gallery-link {
     display: flex;
     align-items: center;
