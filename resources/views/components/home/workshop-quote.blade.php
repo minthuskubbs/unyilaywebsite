@@ -22,7 +22,7 @@
                     </li>
                     <li data-accordion-item>
                         <button type="button" class="unyl-workshop__item-trigger" data-accordion-trigger>
-                            <img src="https://unyilaysilver.com/backend/wp-content/uploads/2026/08/Delivery-Truck-Clock-Streamline-Ultimate.png" alt="" class="unyl-workshop__icon" loading="lazy" />
+                            <img src="{{ asset('images/home/icons/delivery-truck-clock.png') }}" alt="" class="unyl-workshop__icon" loading="lazy" />
                             <h3>Fast Delivery</h3>
                         </button>
                         <div class="unyl-workshop__item-content" data-accordion-content>
