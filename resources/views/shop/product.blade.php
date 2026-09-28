@@ -21,15 +21,6 @@
                 @if (count($product['images']))
                     <div class="unyl-product__main-image">
                         <img src="{{ $product['images'][0] }}" alt="{{ $product['name'] }}" id="productMainImageTag" />
-                        <button
-                            type="button"
-                            class="unyl-product__wishlist unyl-product__wishlist--overlay {{ $isWishlisted ? 'is-active' : '' }}"
-                            data-wishlist-toggle
-                            data-product-id="{{ $product['id'] }}"
-                            aria-label="Add to wishlist"
-                        >
-                            <svg viewBox="0 0 21 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3806 17.7283L2.22677 10.6088C-2.20469 6.3371 4.30956 -1.86456 10.3806 4.77081C16.4518 -1.86456 22.9365 6.36558 18.5345 10.6088L10.3806 17.7283Z"/></svg>
-                        </button>
                     </div>
                     @if (count($product['images']) > 1)
                         <div class="unyl-product__thumbs">
