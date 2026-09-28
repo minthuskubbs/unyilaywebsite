@@ -122,9 +122,35 @@ function initVariations() {
         updateSkuStock(match.sku, match.stock_status, match.stock_quantity);
     }
 
+    // A product with only one variation has nothing to actually choose, so
+    // pre-select it instead of making the shopper pick from a dropdown/box
+    // that only ever has one option anyway.
+    if (variations.length === 1) {
+        const only = variations[0];
+        selects.forEach((select) => {
+            const value = only.attributes[select.dataset.attribute];
+            if (value) select.value = value;
+        });
+    }
+
     selects.forEach((select) => select.addEventListener('change', update));
     initOptionGroups(form);
+    syncOptionGroupButtons(form);
     update();
+}
+
+// Reflects each hidden <select>'s current value onto its rounded-box
+// buttons (used for the single-variation pre-select above, and safe to
+// call any other time the selects change outside a direct button click).
+function syncOptionGroupButtons(form) {
+    form.querySelectorAll('.unyl-product__option-group').forEach((group) => {
+        const select = document.getElementById(group.dataset.optionTarget);
+        if (!select) return;
+
+        group.querySelectorAll('.unyl-product__option-btn').forEach((btn) => {
+            btn.classList.toggle('is-active', btn.dataset.optionValue === select.value);
+        });
+    });
 }
 
 // Rounded-box option buttons (used on ring variation pickers) proxy their

@@ -1,6 +1,20 @@
 <x-layouts.app :categories="$categories" :title="$product['name'] . ' — U Nyi Lay Silver Shop'" :body-class="($isJewelry ?? false) ? 'theme-light' : 'theme-product'">
+    @php
+        $isWishlisted = app(\App\Services\WishlistService::class)->has($product['id']);
+    @endphp
     <div class="unyl-product">
-        <x-shop.breadcrumb :breadcrumbs="array_slice($breadcrumbs, 0, -1)" :current="$product['name']" />
+        <div class="unyl-product__breadcrumb-row">
+            <x-shop.breadcrumb :breadcrumbs="array_slice($breadcrumbs, 0, -1)" :current="$product['name']" />
+            <button
+                type="button"
+                class="unyl-product__wishlist unyl-product__wishlist--breadcrumb {{ $isWishlisted ? 'is-active' : '' }}"
+                data-wishlist-toggle
+                data-product-id="{{ $product['id'] }}"
+                aria-label="Add to wishlist"
+            >
+                <svg viewBox="0 0 21 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3806 17.7283L2.22677 10.6088C-2.20469 6.3371 4.30956 -1.86456 10.3806 4.77081C16.4518 -1.86456 22.9365 6.36558 18.5345 10.6088L10.3806 17.7283Z"/></svg>
+            </button>
+        </div>
 
         <div class="unyl-product__layout">
             <div class="unyl-product__gallery">
@@ -9,7 +23,7 @@
                         <img src="{{ $product['images'][0] }}" alt="{{ $product['name'] }}" id="productMainImageTag" />
                         <button
                             type="button"
-                            class="unyl-product__wishlist unyl-product__wishlist--overlay {{ app(\App\Services\WishlistService::class)->has($product['id']) ? 'is-active' : '' }}"
+                            class="unyl-product__wishlist unyl-product__wishlist--overlay {{ $isWishlisted ? 'is-active' : '' }}"
                             data-wishlist-toggle
                             data-product-id="{{ $product['id'] }}"
                             aria-label="Add to wishlist"
@@ -127,6 +141,12 @@
                                                     $parts = [];
                                                     foreach ($variation['attributes'] as $taxonomy => $value) {
                                                         if ($value === '') continue;
+                                                        // Informational attributes (is_variation: false, e.g. a
+                                                        // "Price" attribute some products carry purely for
+                                                        // display) aren't part of what defines this variation -
+                                                        // skip them so they don't get concatenated into the size
+                                                        // column alongside the real variation attribute(s).
+                                                        if (empty($product['attributes'][$taxonomy]['is_variation'])) continue;
                                                         $termName = collect($product['attributes'][$taxonomy]['terms'] ?? [])->firstWhere('slug', $value)['name'] ?? $value;
                                                         $parts[] = $termName;
                                                     }
