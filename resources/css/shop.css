@@ -227,11 +227,16 @@ body.theme-light .unyl-category-tile__caption { color: #1a1a1a; }
     .unyl-shop__grid { grid-template-columns: repeat(2, 1fr); }
     .unyl-category-tiles { grid-template-columns: repeat(2, 1fr); }
 
-    /* Breadcrumb icon + "Categories" filter side by side, 2 columns. */
+    /* Breadcrumb icon + "Categories" filter side by side, 2 columns. On
+       category-index pages the breadcrumb is hidden on mobile and only the
+       title remains — justify-content: center keeps it centered instead of
+       flex's default left-alignment; the "Categories" button's own
+       margin-left: auto still overrides this on pages that have it. */
     .unyl-shop__header {
         display: flex;
         align-items: center;
         gap: 12px;
+        justify-content: center;
         margin-bottom: 24px;
     }
 
