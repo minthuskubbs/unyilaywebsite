@@ -392,7 +392,10 @@ class CategoryService
         $prefix = DB::connection('wordpress')->getTablePrefix();
         $orderColumn = $mode === 'popular' ? "{$prefix}sales.meta_value + 0" : "{$prefix}p.post_date";
 
-        $row = DB::connection('wordpress')
+        // Pull several top candidates rather than just one — the highest-ranked
+        // product's image file can be missing on disk (upload gaps happen), so
+        // we fall through the list until we find one whose image actually loads.
+        $rows = DB::connection('wordpress')
             ->table('term_relationships as tr')
             ->join('term_taxonomy as tt', 'tr.term_taxonomy_id', '=', 'tt.term_taxonomy_id')
             ->join('posts as p', 'tr.object_id', '=', 'p.ID')
@@ -408,20 +411,57 @@ class CategoryService
             ->select('p.ID as product_id', 'p.post_title', 'p.post_name')
             ->distinct()
             ->orderByDesc(DB::raw($orderColumn))
-            ->first();
+            ->limit(8)
+            ->get();
 
-        if (!$row) {
+        if ($rows->isEmpty()) {
             return null;
         }
 
-        $image = app(ProductImageResolver::class)->urlsForProducts([$row->product_id])[$row->product_id] ?? null;
+        $images = app(ProductImageResolver::class)->urlsForProducts($rows->pluck('product_id')->all());
+
+        foreach ($rows as $row) {
+            $image = $images[$row->product_id] ?? null;
+            if ($image && $this->imageUrlExists($image)) {
+                return [
+                    'id' => $row->product_id,
+                    'name' => $row->post_title,
+                    'slug' => $row->post_name,
+                    'image' => $image,
+                ];
+            }
+        }
+
+        // Nothing had a verifiably-live image — fall back to the top candidate
+        // anyway so the card still links somewhere, just without an image.
+        $top = $rows->first();
 
         return [
-            'id' => $row->product_id,
-            'name' => $row->post_title,
-            'slug' => $row->post_name,
-            'image' => $image,
+            'id' => $top->product_id,
+            'name' => $top->post_title,
+            'slug' => $top->post_name,
+            'image' => null,
         ];
+    }
+
+    /**
+     * Cached HEAD check so a missing upload doesn't silently break a menu
+     * teaser card — checked once per URL per cache window, not per request.
+     * Fails open: the site sits behind Cloudflare bot-protection, which can
+     * answer with 429/timeouts for legitimate automated requests, so only a
+     * confirmed 404 counts as "broken" — anything else is assumed fine.
+     */
+    private function imageUrlExists(string $url): bool
+    {
+        return Cache::remember('img_exists:' . md5($url), self::CACHE_TTL, function () use ($url) {
+            try {
+                $response = \Illuminate\Support\Facades\Http::timeout(3)->head($url);
+
+                return $response->status() !== 404;
+            } catch (\Throwable $e) {
+                return true;
+            }
+        });
     }
 
     /**
