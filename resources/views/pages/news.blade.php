@@ -1,4 +1,4 @@
-<x-layouts.app :categories="$categories" title="News &amp; Articles — U Nyi Lay Silver Shop">
+<x-layouts.app :categories="$categories" title="News &amp; Articles — U Nyi Lay Silver Shop" description="Read the latest news, stories and updates from U Nyi Lay Silver Shop — Myanmar's trusted silverware, brass and jewelry craftsman since 1950.">
     <div class="unyl-page unyl-news">
         <div class="unyl-news__header">
             <h1>News &amp; Articles</h1>

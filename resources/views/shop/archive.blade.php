@@ -1,4 +1,4 @@
-<x-layouts.app :categories="$categories" :title="$title . ' — U Nyi Lay Silver Shop'" :body-class="($isJewelry ?? false) ? 'theme-light' : null">
+<x-layouts.app :categories="$categories" :title="$title . ' — U Nyi Lay Silver Shop'" :description="'Shop ' . $title . ' at U Nyi Lay Silver Shop — handcrafted Burmese silverware and brass, made for gifts and decorations.'" :body-class="($isJewelry ?? false) ? 'theme-light' : null">
     <div class="unyl-shop">
         <div class="unyl-shop__header">
             <x-shop.breadcrumb :breadcrumbs="array_slice($breadcrumbs, 0, -1)" :current="$title" />

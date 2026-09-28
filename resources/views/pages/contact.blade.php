@@ -1,4 +1,4 @@
-<x-layouts.app :categories="$categories" title="Contact Us — U Nyi Lay Silver Shop">
+<x-layouts.app :categories="$categories" title="Contact Us — U Nyi Lay Silver Shop" description="Get in touch with U Nyi Lay Silver Shop. Loon Gu Kyaung Street, Yankin Tsp, Yangon, Myanmar. Call us at 09 506-2583, 09 512-4920, 09 509-9843, 09 501-6665.">
     <div class="unyl-page unyl-contact">
         <section class="unyl-contact__hero">
             <img src="https://unyilaysilver.com/backend/wp-content/uploads/2020/07/shwedagon-pagoda-temple-beautiful-sunset-in-yangon-myanmar-or-burma_SD7WiN1unzl-scaled.jpg" alt="" class="unyl-contact__hero-bg" loading="lazy" />

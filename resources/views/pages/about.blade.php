@@ -1,4 +1,4 @@
-<x-layouts.app :categories="$categories" title="About Us — U Nyi Lay Silver Shop">
+<x-layouts.app :categories="$categories" title="About Us — U Nyi Lay Silver Shop" description="Discover the story behind U Nyi Lay Silver Shop — over 60 years of handcrafted Burmese silverware, from traditional Pan-Dein relief work to modern silver and brass pieces.">
     <div class="unyl-page unyl-about">
         <section class="unyl-about__story">
             <div class="unyl-about__story-media">

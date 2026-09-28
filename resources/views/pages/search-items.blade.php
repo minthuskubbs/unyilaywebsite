@@ -1,4 +1,4 @@
-<x-layouts.app :categories="$categories" title="Search Items — U Nyi Lay Silver Shop">
+<x-layouts.app :categories="$categories" title="Search Items — U Nyi Lay Silver Shop" description="Search U Nyi Lay Silver Shop's full range of handcrafted silverware, brass and jewelry pieces.">
     <div class="unyl-search-page">
         <div class="unyl-search-page__hero">
             <form action="{{ url('/search-items') }}" method="GET" class="unyl-search-form unyl-search-page__form">

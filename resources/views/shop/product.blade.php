@@ -1,4 +1,10 @@
-<x-layouts.app :categories="$categories" :title="$product['name'] . ' — U Nyi Lay Silver Shop'" :body-class="($isJewelry ?? false) ? 'theme-light' : 'theme-product'">
+<x-layouts.app
+    :categories="$categories"
+    :title="$product['name'] . ' — U Nyi Lay Silver Shop'"
+    :description="Str::limit(strip_tags($product['short_description'] ?: $product['description'] ?? ''), 155) ?: ($product['name'] . ' — handcrafted at U Nyi Lay Silver Shop.')"
+    :image="$product['images'][0] ?? null"
+    :body-class="($isJewelry ?? false) ? 'theme-light' : 'theme-product'"
+>
     @php
         $isWishlisted = app(\App\Services\WishlistService::class)->has($product['id']);
     @endphp

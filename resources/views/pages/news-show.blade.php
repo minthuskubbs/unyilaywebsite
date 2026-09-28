@@ -1,4 +1,4 @@
-<x-layouts.app :categories="$categories" :title="$article['title'] . ' — U Nyi Lay Silver Shop'">
+<x-layouts.app :categories="$categories" :title="$article['title'] . ' — U Nyi Lay Silver Shop'" :description="Str::limit(strip_tags($article['subtitle'] ?? $article['content'] ?? ''), 155) ?: 'Read this story from U Nyi Lay Silver Shop.'" :image="$article['image'] ?? null">
     <div class="unyl-page unyl-news-article">
         <a href="{{ url('/news-articles') }}" class="unyl-news-article__back">&larr; News &amp; Articles</a>
 
