@@ -1,7 +1,7 @@
 <x-layouts.app :categories="$categories" title="Contact Us — U Nyi Lay Silver Shop">
     <div class="unyl-page unyl-contact">
         <section class="unyl-contact__hero">
-            <img src="https://unyilaysilver.com/wp-content/uploads/2020/07/shwedagon-pagoda-temple-beautiful-sunset-in-yangon-myanmar-or-burma_SD7WiN1unzl-scaled.jpg" alt="" class="unyl-contact__hero-bg" loading="lazy" />
+            <img src="https://unyilaysilver.com/backend/wp-content/uploads/2020/07/shwedagon-pagoda-temple-beautiful-sunset-in-yangon-myanmar-or-burma_SD7WiN1unzl-scaled.jpg" alt="" class="unyl-contact__hero-bg" loading="lazy" />
             <div class="unyl-contact__hero-overlay"></div>
             <div class="unyl-contact__hero-content">
                 <h1>Contact Us</h1>

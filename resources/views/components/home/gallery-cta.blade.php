@@ -9,7 +9,7 @@
     </div>
 
     <div class="unyl-gallery-cta__media">
-        <img src="https://unyilaysilver.com/wp-content/uploads/2026/08/Rectangle-8-2-883x800.png" alt="Burmese silver art" loading="lazy" />
+        <img src="https://unyilaysilver.com/backend/wp-content/uploads/2026/08/Rectangle-8-2-883x800.png" alt="Burmese silver art" loading="lazy" />
     </div>
 </section>
         

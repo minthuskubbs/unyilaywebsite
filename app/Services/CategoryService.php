@@ -349,9 +349,9 @@ class CategoryService
         'anklets' => 'images/jewelry/anklets.jpg',
         'baby-silver' => 'images/jewelry/baby-silver.jpg',
         'belts' => 'images/jewelry/belts.jpg',
-        'toerings' => 'https://unyilaysilver.com/wp-content/uploads/2022/05/IMG_1494-247x296.jpg',
+        'toerings' => 'https://unyilaysilver.com/backend/wp-content/uploads/2022/05/IMG_1494-247x296.jpg',
         'amulets-asaawin' => 'images/jewelry/amulets-asaawin.jpg',
-        'general' => 'https://unyilaysilver.com/wp-content/uploads/2022/06/285940305_712606039973477_7926842476250524608_n-247x296.jpg',
+        'general' => 'https://unyilaysilver.com/backend/wp-content/uploads/2022/06/285940305_712606039973477_7926842476250524608_n-247x296.jpg',
     ];
 
     private function categoryImage(int $termId, ?string $slug = null): ?string

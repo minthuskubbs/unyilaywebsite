@@ -5,7 +5,7 @@
                 <h2>The Art of Pan-Dein</h2>
                 <p>The ancient practice of hammering silver from the reverse to create raised narrative relief. Each bowl, each box, each piece is a hand-wrought manuscript, telling the Buddha&rsquo;s stories without a single written word.</p>
             </div>
-            <img src="https://unyilaysilver.com/wp-content/uploads/2026/08/Rectangle-12-1.png" alt="Silver bowl craft" loading="lazy" />
+            <img src="https://unyilaysilver.com/backend/wp-content/uploads/2026/08/Rectangle-12-1.png" alt="Silver bowl craft" loading="lazy" />
         </div>
 
         <div class="unyl-craft__card">

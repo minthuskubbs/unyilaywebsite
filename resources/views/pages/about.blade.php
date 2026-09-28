@@ -2,7 +2,7 @@
     <div class="unyl-page unyl-about">
         <section class="unyl-about__story">
             <div class="unyl-about__story-media">
-                <img src="https://unyilaysilver.com/wp-content/uploads/2021/07/profile.jpg" alt="U Nyi Lay, Founder" loading="lazy" />
+                <img src="https://unyilaysilver.com/backend/wp-content/uploads/2021/07/profile.jpg" alt="U Nyi Lay, Founder" loading="lazy" />
             </div>
             <div class="unyl-about__story-text">
                 <h1>Our Story</h1>
@@ -19,22 +19,22 @@
 
         <section class="unyl-about__features">
             <div class="unyl-about__feature">
-                <img src="https://unyilaysilver.com/wp-content/uploads/2020/07/icon-1-1.png" alt="" loading="lazy" />
+                <img src="https://unyilaysilver.com/backend/wp-content/uploads/2020/07/icon-1-1.png" alt="" loading="lazy" />
                 <h3>Experience</h3>
                 <p>Over 60 years experience</p>
             </div>
             <div class="unyl-about__feature">
-                <img src="https://unyilaysilver.com/wp-content/uploads/2020/07/icon3.png" alt="" loading="lazy" />
+                <img src="https://unyilaysilver.com/backend/wp-content/uploads/2020/07/icon3.png" alt="" loading="lazy" />
                 <h3>Quality</h3>
                 <p>Top quality silver</p>
             </div>
             <div class="unyl-about__feature">
-                <img src="https://unyilaysilver.com/wp-content/uploads/2020/07/icon2.png" alt="" loading="lazy" />
+                <img src="https://unyilaysilver.com/backend/wp-content/uploads/2020/07/icon2.png" alt="" loading="lazy" />
                 <h3>Design</h3>
                 <p>Masterpiece</p>
             </div>
             <div class="unyl-about__feature">
-                <img src="https://unyilaysilver.com/wp-content/uploads/2020/07/icon4.png" alt="" loading="lazy" />
+                <img src="https://unyilaysilver.com/backend/wp-content/uploads/2020/07/icon4.png" alt="" loading="lazy" />
                 <h3>Service</h3>
                 <p>Detailed service</p>
             </div>

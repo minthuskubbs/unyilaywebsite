@@ -2,10 +2,10 @@
     <h2 class="unyl-timeline__title">Our longevity is driven by a<br>simple promise</h2>
 
     <div class="unyl-timeline__stage" id="unylStage">
-        <img class="unyl-timeline__bgimg is-active" src="https://unyilaysilver.com/wp-content/uploads/2026/07/History-Background.svg" alt="Pyu Era excavation" data-era="0">
-        <img class="unyl-timeline__bgimg" src="https://unyilaysilver.com/wp-content/uploads/2026/08/History-Background-1.png" alt="Bagan Era" data-era="1">
-        <img class="unyl-timeline__bgimg" src="https://unyilaysilver.com/wp-content/uploads/2026/08/Legacy-History-Section.png" alt="Konbaung Era" data-era="2">
-        <img class="unyl-timeline__bgimg" src="https://unyilaysilver.com/wp-content/uploads/2026/08/Legacy-History-Section-1.png" alt="Modern Era" data-era="3">
+        <img class="unyl-timeline__bgimg is-active" src="https://unyilaysilver.com/backend/wp-content/uploads/2026/07/History-Background.svg" alt="Pyu Era excavation" data-era="0">
+        <img class="unyl-timeline__bgimg" src="https://unyilaysilver.com/backend/wp-content/uploads/2026/08/History-Background-1.png" alt="Bagan Era" data-era="1">
+        <img class="unyl-timeline__bgimg" src="https://unyilaysilver.com/backend/wp-content/uploads/2026/08/Legacy-History-Section.png" alt="Konbaung Era" data-era="2">
+        <img class="unyl-timeline__bgimg" src="https://unyilaysilver.com/backend/wp-content/uploads/2026/08/Legacy-History-Section-1.png" alt="Modern Era" data-era="3">
         <div class="unyl-timeline__overlay"></div>
 
         <div class="unyl-timeline__row" id="unylEraRow">
@@ -37,6 +37,6 @@
     </div>
 
     <div class="unyl-divider">
-        <img src="https://unyilaysilver.com/wp-content/uploads/2026/07/Divider-Small-Leaf.svg" alt="" loading="lazy">
+        <img src="https://unyilaysilver.com/backend/wp-content/uploads/2026/07/Divider-Small-Leaf.svg" alt="" loading="lazy">
     </div>
 </section>
