@@ -16,6 +16,7 @@ class CategoryService
     private const BRASS_PARENT_ID = 434;
     private const EXCLUDED_PARENT_IDS = [self::JEWELRY_PARENT_ID, self::GOLD_JEWELRY_PARENT_ID, self::BRASS_PARENT_ID];
     private const CACHE_TTL = 900; // 15 minutes — WP changes don't need to be instant here.
+    private const IMAGE_CHECK_TTL = 86400; // 24 hours — a missing upload is a one-off gap, not something that flaps.
 
     /**
      * The top-level category IDs (excluding jewelry, gold-jewelry, and brass)
@@ -419,10 +420,11 @@ class CategoryService
         }
 
         $images = app(ProductImageResolver::class)->urlsForProducts($rows->pluck('product_id')->all());
+        $liveMap = $this->imagesExist(array_values(array_filter($images)));
 
         foreach ($rows as $row) {
             $image = $images[$row->product_id] ?? null;
-            if ($image && $this->imageUrlExists($image)) {
+            if ($image && ($liveMap[$image] ?? true)) {
                 return [
                     'id' => $row->product_id,
                     'name' => $row->post_title,
@@ -445,23 +447,60 @@ class CategoryService
     }
 
     /**
-     * Cached HEAD check so a missing upload doesn't silently break a menu
-     * teaser card — checked once per URL per cache window, not per request.
-     * Fails open: the site sits behind Cloudflare bot-protection, which can
-     * answer with 429/timeouts for legitimate automated requests, so only a
-     * confirmed 404 counts as "broken" — anything else is assumed fine.
+     * Cached, batched HEAD check so a missing upload doesn't silently break a
+     * menu teaser card. Checked once per URL for a full day (long TTL — this
+     * is a one-off data gap, not something that changes minute to minute),
+     * and only the URLs not already cached are actually requested, in
+     * parallel, with a short timeout so a slow/blocked check can never stall
+     * the page. Fails open: the site sits behind Cloudflare bot-protection,
+     * which can answer with 429/timeouts for perfectly fine images, so only
+     * a confirmed 404 counts as "broken" — anything else (including a
+     * request that errors or times out) is assumed fine.
+     *
+     * @param  string[]  $urls
+     * @return array<string, bool>
      */
-    private function imageUrlExists(string $url): bool
+    private function imagesExist(array $urls): array
     {
-        return Cache::remember('img_exists:' . md5($url), self::CACHE_TTL, function () use ($url) {
-            try {
-                $response = \Illuminate\Support\Facades\Http::timeout(3)->head($url);
+        $urls = array_values(array_unique($urls));
+        if (empty($urls)) {
+            return [];
+        }
 
-                return $response->status() !== 404;
-            } catch (\Throwable $e) {
-                return true;
+        $cacheKeys = collect($urls)->mapWithKeys(fn ($url) => [$url => 'img_exists:' . md5($url)]);
+        $cached = Cache::many($cacheKeys->values()->all());
+
+        $result = [];
+        $toCheck = [];
+        foreach ($urls as $url) {
+            $value = $cached[$cacheKeys[$url]] ?? null;
+            if ($value === null) {
+                $toCheck[] = $url;
+            } else {
+                $result[$url] = (bool) $value;
             }
-        });
+        }
+
+        if (!empty($toCheck)) {
+            try {
+                $responses = \Illuminate\Support\Facades\Http::pool(
+                    fn ($pool) => collect($toCheck)->map(fn ($url) => $pool->as($url)->timeout(2)->head($url))->all()
+                );
+            } catch (\Throwable $e) {
+                $responses = [];
+            }
+
+            $toCache = [];
+            foreach ($toCheck as $url) {
+                $response = $responses[$url] ?? null;
+                $isLive = !($response instanceof \Illuminate\Http\Client\Response) || $response->status() !== 404;
+                $result[$url] = $isLive;
+                $toCache[$cacheKeys[$url]] = $isLive;
+            }
+            Cache::putMany($toCache, self::IMAGE_CHECK_TTL);
+        }
+
+        return $result;
     }
 
     /**
