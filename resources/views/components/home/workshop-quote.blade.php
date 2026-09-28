@@ -11,7 +11,7 @@
                 <ul class="unyl-workshop__list" id="workshopAccordion">
                     <li class="is-active" data-accordion-item>
                         <button type="button" class="unyl-workshop__item-trigger" data-accordion-trigger>
-                            <img src="https://unyilaysilver.com/backend/wp-content/uploads/2026/08/Reward-Stars-2-Streamline-Ultimate.png" alt="" class="unyl-workshop__icon" loading="lazy" />
+                            <img src="{{ asset('images/home/icons/reward-stars.png') }}" alt="" class="unyl-workshop__icon" loading="lazy" />
                             <h3>Quality</h3>
                         </button>
                         <div class="unyl-workshop__item-content" data-accordion-content>
@@ -33,7 +33,7 @@
                     </li>
                     <li data-accordion-item>
                         <button type="button" class="unyl-workshop__item-trigger" data-accordion-trigger>
-                            <img src="https://unyilaysilver.com/backend/wp-content/uploads/2026/08/Gift-Box-1-Streamline-Ultimate.png" alt="" class="unyl-workshop__icon" loading="lazy" />
+                            <img src="{{ asset('images/home/icons/gift-box.png') }}" alt="" class="unyl-workshop__icon" loading="lazy" />
                             <h3>Elegant Packaging</h3>
                         </button>
                         <div class="unyl-workshop__item-content" data-accordion-content>
