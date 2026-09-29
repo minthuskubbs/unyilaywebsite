@@ -21,7 +21,11 @@
     # permalinks, etc.) gets caught by this catch-all and routed into
     # Laravel's own router instead of falling through to WordPress's own
     # nested .htaccess, which is what actually handles those virtual routes.
-    RewriteCond %{REQUEST_URI} !^/backend/
+    # NOTE: by the time this per-directory context evaluates REQUEST_URI,
+    # the root .htaccess's rewrite to public/$1 has already happened, so
+    # the path here is /public/backend/..., not /backend/... — matching
+    # the un-prefixed form here was a no-op (verified against production).
+    RewriteCond %{REQUEST_URI} !^/public/backend/
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
