@@ -3,6 +3,10 @@
         <div class="unyl-auth__card">
             <h1>Login</h1>
 
+            @if (session('status'))
+                <p class="unyl-contact__flash">{{ session('status') }}</p>
+            @endif
+
             @if ($errors->any())
                 <p class="unyl-contact__flash unyl-contact__flash--error">{{ $errors->first() }}</p>
             @endif
@@ -29,6 +33,7 @@
                     <label for="password">Password *</label>
                     <input type="password" id="password" name="password" required />
                 </div>
+                <p class="unyl-auth__forgot"><a href="{{ route('password.request') }}">Forgot password?</a></p>
                 <button type="submit" class="unyl-btn unyl-auth__submit">Log in</button>
             </form>
 

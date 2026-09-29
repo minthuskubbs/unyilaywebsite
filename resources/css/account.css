@@ -2,7 +2,11 @@
 .unyl-auth { padding: 130px 20px 100px; display: flex; justify-content: center; }
 .unyl-auth__card { width: 100%; max-width: 420px; background: var(--unyl-card); border-radius: 16px; padding: 40px; }
 .unyl-auth__card h1 { font-family: var(--font-serif); font-weight: 400; font-size: 28px; margin: 0 0 24px; text-align: center; }
-.unyl-auth__submit { display: block; width: 100%; box-sizing: border-box; text-align: center; margin-top: 6px; }
+.unyl-auth__submit { display: block; margin: 6px auto 0; }
+.unyl-auth__hint { font-family: var(--font-sans); font-size: 14px; color: var(--unyl-text-dim); margin: 0 0 20px; line-height: 1.6; }
+.unyl-auth__forgot { text-align: right; margin: -10px 0 20px; font-family: var(--font-sans); font-size: 13px; }
+.unyl-auth__forgot a { color: var(--unyl-text-dim); text-decoration: underline; }
+.unyl-auth__forgot a:hover { color: var(--unyl-text); }
 .unyl-auth__switch { text-align: center; font-family: var(--font-sans); font-size: 14px; color: var(--unyl-text-dim); margin: 20px 0 0; }
 .unyl-auth__switch a { color: var(--unyl-text); text-decoration: underline; }
 
