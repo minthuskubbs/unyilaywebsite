@@ -45,13 +45,14 @@ img { max-width: 100%; }
     background: var(--unyl-btn-bg);
     border: none;
     border-radius: 999px;
-    padding: 20px 18px;
+    padding: 20px 12px;
     transition: opacity .25s ease;
     cursor: pointer;
     min-width: 130px;
     text-align: center;
     height: 63px;
     margin-bottom: 20px;
+    max-width: 160px;
     max-width: 160px;
 }
 .unyl-btn:hover { opacity: 0.85; }
