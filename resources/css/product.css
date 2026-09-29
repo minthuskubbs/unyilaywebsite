@@ -8,7 +8,10 @@
 .unyl-product__breadcrumb-row .unyl-breadcrumb { flex: 1; min-width: 0; }
 .unyl-product__wishlist--breadcrumb { width: 44px; height: 44px; }
 @media (max-width: 900px) {
-    .unyl-product__wishlist--breadcrumb {
+    /* Combined-class selector so this reliably beats the later, equal-
+       specificity base .unyl-product__wishlist rule (44px) regardless of
+       source order. */
+    .unyl-product__wishlist.unyl-product__wishlist--breadcrumb {
         width: 35px;
         height: 35px;
     }
