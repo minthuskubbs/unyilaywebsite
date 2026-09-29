@@ -12,8 +12,25 @@ use Illuminate\Support\Collection;
  */
 class ProductImageResolver
 {
+    /**
+     * WordPress attachment ID => self-hosted local replacement, for images
+     * whose files are missing on the server (an upload-migration gap) but
+     * whose attachment records/metadata are still intact. Keyed by
+     * attachment ID (not product ID) since that's what every resolver
+     * method below works with; listing/detail give each their own size.
+     */
+    private const LOCAL_IMAGE_OVERRIDES = [
+        9948 => ['listing' => 'images/products/antique-chain-400.png', 'full' => 'images/products/antique-chain-800.png'],
+        9944 => ['listing' => 'images/products/heartbeat-chain-400.png', 'full' => 'images/products/heartbeat-chain-800.png'],
+        9946 => ['listing' => 'images/products/twin-hearts-chain-400.png', 'full' => 'images/products/twin-hearts-chain-800.png'],
+    ];
+
     public function urlForAttachment(int $attachmentId): ?string
     {
+        if ($override = self::LOCAL_IMAGE_OVERRIDES[$attachmentId] ?? null) {
+            return asset($override['full']);
+        }
+
         $path = DB::connection('wordpress')
             ->table('postmeta')
             ->where('post_id', $attachmentId)
@@ -69,6 +86,11 @@ class ProductImageResolver
 
         return $thumbMeta->mapWithKeys(function ($attachmentId, $productId) use ($pathMap, $metaMap, $base) {
             $attachmentId = (int) $attachmentId;
+
+            if ($override = self::LOCAL_IMAGE_OVERRIDES[$attachmentId] ?? null) {
+                return [(int) $productId => asset($override['listing'])];
+            }
+
             $fullPath = $pathMap->get($attachmentId) ?? $pathMap->get((string) $attachmentId);
             if (!$fullPath) {
                 return [(int) $productId => null];
@@ -129,13 +151,21 @@ class ProductImageResolver
 
         $base = $this->baseUrl();
 
-        return DB::connection('wordpress')
+        $resolved = DB::connection('wordpress')
             ->table('postmeta')
             ->whereIn('post_id', $attachmentIds)
             ->where('meta_key', '_wp_attached_file')
             ->pluck('meta_value', 'post_id')
             ->mapWithKeys(fn ($path, $id) => [(int) $id => $base . '/' . ltrim($path, '/')])
             ->all();
+
+        foreach (self::LOCAL_IMAGE_OVERRIDES as $attachmentId => $override) {
+            if (in_array($attachmentId, $attachmentIds, true)) {
+                $resolved[$attachmentId] = asset($override['full']);
+            }
+        }
+
+        return $resolved;
     }
 
     private function baseUrl(): string
