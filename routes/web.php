@@ -83,6 +83,9 @@ Route::get('/register', [AuthController::class, 'showRegister'])->name('register
 Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:6,1')->name('register.attempt');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+Route::get('/auth/google', [AuthController::class, 'googleRedirect'])->name('auth.google');
+Route::get('/auth/google/callback', [AuthController::class, 'googleCallback'])->name('auth.google.callback');
+
 Route::middleware('auth.customer')->prefix('my-account')->name('account.')->group(function () {
     Route::get('/', [AccountController::class, 'dashboard'])->name('dashboard');
     Route::get('/orders', [AccountController::class, 'orders'])->name('orders');

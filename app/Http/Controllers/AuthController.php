@@ -6,6 +6,10 @@ use App\Services\CategoryService;
 use App\Services\WooCommerceService;
 use App\Services\WordPressAuthService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
@@ -89,6 +93,72 @@ class AuthController extends Controller
         ]);
 
         return redirect()->route('account.dashboard');
+    }
+
+    public function googleRedirect()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+
+    /**
+     * Logs an existing customer in, or creates a new WooCommerce customer
+     * account (the "customer" WordPress role, same as a normal storefront
+     * registration), matched/linked by email address.
+     */
+    public function googleCallback(Request $request)
+    {
+        try {
+            $googleUser = Socialite::driver('google')->user();
+        } catch (\Throwable $e) {
+            Log::error('Google sign-in failed', ['exception' => $e->getMessage()]);
+            return redirect()->route('login')->withErrors(['login' => 'Google sign-in failed. Please try again.']);
+        }
+
+        $email = $googleUser->getEmail();
+        if (!$email) {
+            return redirect()->route('login')->withErrors(['login' => 'Your Google account has no email address to sign in with.']);
+        }
+
+        $existing = DB::connection('wordpress')->table('users')->where('user_email', $email)->first();
+
+        if ($existing) {
+            $customer = [
+                'id' => (int) $existing->ID,
+                'login' => $existing->user_login,
+                'email' => $existing->user_email,
+                'name' => $existing->display_name ?: $existing->user_login,
+            ];
+        } else {
+            $name = trim((string) $googleUser->getName()) ?: explode('@', $email)[0];
+            $nameParts = explode(' ', $name, 2);
+
+            $result = $this->wooCommerce->createCustomer([
+                'email' => $email,
+                'first_name' => $nameParts[0],
+                'last_name' => $nameParts[1] ?? '',
+                'password' => Str::random(32),
+                'meta_data' => [
+                    ['key' => 'google_id', 'value' => $googleUser->getId()],
+                ],
+            ]);
+
+            if (!$result['success']) {
+                return redirect()->route('login')->withErrors(['login' => $result['error']]);
+            }
+
+            $wcCustomer = $result['customer'];
+            $customer = [
+                'id' => (int) $wcCustomer['id'],
+                'login' => $wcCustomer['username'] ?? $email,
+                'email' => $wcCustomer['email'],
+                'name' => trim(($wcCustomer['first_name'] ?? '') . ' ' . ($wcCustomer['last_name'] ?? '')) ?: $name,
+            ];
+        }
+
+        $request->session()->regenerate();
+        $request->session()->put('customer', $customer);
+
+        return redirect()->intended(route('account.dashboard'));
     }
 
     public function logout(Request $request)

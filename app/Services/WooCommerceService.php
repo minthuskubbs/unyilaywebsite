@@ -160,6 +160,17 @@ class WooCommerceService
         return $response->successful() ? $response->json() : [];
     }
 
+    public function findCustomerByEmail(string $email): ?array
+    {
+        $response = $this->client()->get($this->endpoint('customers'), ['email' => $email, 'per_page' => 1]);
+        if (!$response->successful()) {
+            return null;
+        }
+
+        $results = $response->json();
+        return $results[0] ?? null;
+    }
+
     /**
      * Creates a real WordPress user (with the "customer" role) via the
      * WooCommerce REST API, so WordPress's own wp_insert_user() handles
