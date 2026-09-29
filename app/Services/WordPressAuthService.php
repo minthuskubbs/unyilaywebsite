@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Support\OriginPinnedHttp;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
@@ -31,10 +32,12 @@ class WordPressAuthService
         }
 
         try {
-            $response = Http::asForm()
+            $request = Http::asForm()
                 ->withOptions(['allow_redirects' => false])
-                ->timeout(15)
-                ->post($siteUrl . '/wp-login.php', [
+                ->timeout(15);
+            $request = OriginPinnedHttp::apply($request, $siteUrl);
+
+            $response = $request->post($siteUrl . '/wp-login.php', [
                     'log' => $login,
                     'pwd' => $password,
                     'wp-submit' => 'Log In',

@@ -35,6 +35,15 @@ return [
         'url'    => env('WC_SITE_URL', ''),
         'key'    => env('WC_CONSUMER_KEY', ''),
         'secret' => env('WC_CONSUMER_SECRET', ''),
+        // Laravel and WordPress run on the same physical server, but the
+        // public domain is proxied through Cloudflare, which challenges
+        // server-to-server requests (wp-login.php, the WC REST API) as if
+        // they were bots. Setting this to the server's own public IP makes
+        // outbound calls connect directly to the origin (skipping the
+        // Cloudflare round-trip) while still sending the real hostname for
+        // TLS/virtual-host routing — see WordPressAuthService and
+        // WooCommerceService. Leave blank to disable (normal DNS resolution).
+        'origin_ip' => env('WC_ORIGIN_IP', ''),
     ],
 
     'google' => [

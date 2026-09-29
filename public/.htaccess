@@ -15,6 +15,13 @@
     RewriteRule ^ %1 [L,R=301]
 
     # Send Requests To Front Controller...
+    # Exclude /backend — that's WordPress living inside this public/ folder
+    # (see the root .htaccess's deploy note); without this exclusion, any
+    # WordPress URL that isn't a literal file on disk (wp-json/*, pretty
+    # permalinks, etc.) gets caught by this catch-all and routed into
+    # Laravel's own router instead of falling through to WordPress's own
+    # nested .htaccess, which is what actually handles those virtual routes.
+    RewriteCond %{REQUEST_URI} !^/backend/
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]

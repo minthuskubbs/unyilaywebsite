@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Support\OriginPinnedHttp;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -20,9 +21,11 @@ class WooCommerceService
 
     private function client()
     {
-        return Http::withBasicAuth($this->consumerKey, $this->consumerSecret)
+        $request = Http::withBasicAuth($this->consumerKey, $this->consumerSecret)
                    ->acceptJson()
                    ->timeout(15);
+
+        return OriginPinnedHttp::apply($request, $this->baseUrl);
     }
 
     private function endpoint(string $path): string
