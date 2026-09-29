@@ -8,6 +8,7 @@ use App\Services\WooCommerceService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
@@ -43,6 +44,8 @@ class PasswordResetController extends Controller
 
         $user = DB::connection('wordpress')->table('users')->where('user_email', $validated['email'])->first();
 
+        Log::info('Password reset requested', ['email' => $validated['email'], 'account_found' => (bool) $user]);
+
         // Always show the same success message whether or not the email is a
         // real account, so this form can't be used to check who has an
         // account here (standard practice for any "forgot password" form).
@@ -56,7 +59,12 @@ class PasswordResetController extends Controller
 
             $resetUrl = route('password.reset', ['token' => $plainToken, 'email' => $user->user_email]);
 
-            Mail::to($user->user_email)->send(new ResetPasswordMail($resetUrl, $user->display_name ?: $user->user_login));
+            try {
+                Mail::to($user->user_email)->send(new ResetPasswordMail($resetUrl, $user->display_name ?: $user->user_login));
+                Log::info('Password reset email sent', ['email' => $user->user_email]);
+            } catch (\Throwable $e) {
+                Log::error('Password reset email failed to send', ['email' => $user->user_email, 'exception' => $e->getMessage()]);
+            }
         }
 
         return back()->with('status', 'If an account exists for that email, we\'ve sent a password reset link.');
