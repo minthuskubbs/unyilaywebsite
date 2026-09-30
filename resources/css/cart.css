@@ -102,3 +102,8 @@
     .unyl-cart__layout { grid-template-columns: 1fr; }
     .unyl-cart__table { display: block; overflow-x: auto; }
 }
+@media (max-width: 768px) {
+    /* The sitewide mobile .unyl-btn cap (max-width: 160px) would otherwise
+       shrink this button, which is meant to stay full-width. */
+    .unyl-btn.unyl-cart__checkout-btn { max-width: 100% !important; }
+}

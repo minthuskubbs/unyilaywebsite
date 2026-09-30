@@ -68,7 +68,19 @@
         margin: 0 0 22px !important;
         max-width: 460px !important;
     }
-    .unyl-hero .unyl-btn {
+    .unyl-hero__media img {
+        display: block;
+        width: 100% !important;
+        height: 100vh !important;
+        object-fit: cover;
+    }
+}
+
+/* Mobile-wide: every .unyl-btn (not just the hero's) matches the hero
+   banner's mobile sizing, and every <p> that's 18px on desktop drops to
+   16px — both requested as sitewide mobile-only tweaks. */
+@media (max-width: 768px) {
+    .unyl-btn {
         font-family: var(--font-sans) !important;
         font-size: 15px !important;
         color: var(--unyl-btn-text) !important;
@@ -81,11 +93,13 @@
         margin-bottom: 20px !important;
         max-width: 160px !important;
     }
-    .unyl-hero__media img {
-        display: block;
-        width: 100% !important;
-        height: 100vh !important;
-        object-fit: cover;
+    .unyl-hcard__cap p,
+    .unyl-jewelry-cta__text p,
+    .unyl-gallery-cta__text p,
+    .unyl-craft__card p,
+    .unyl-workshop__list p,
+    .unyl-contact__hero-content p {
+        font-size: 16px !important;
     }
 }
 
@@ -155,16 +169,6 @@
     .unyl-hcard--jewelry { order: 2; }
     .unyl-hcard--brass { order: 3; }
     .unyl-hcard--quote { display: none; }
-    .unyl-hcard__cap h3 { position: relative; padding-bottom: 12px; }
-    .unyl-hcard__cap h3::after {
-        content: '';
-        position: absolute;
-        left: 0;
-        bottom: 0;
-        width: 50px;
-        height: 1px;
-        background: currentColor;
-    }
 }
 
 /* ===== Timeline ===== */

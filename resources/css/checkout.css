@@ -102,6 +102,11 @@
     .unyl-checkout__layout { grid-template-columns: 1fr; }
     .unyl-checkout__row { grid-template-columns: 1fr; }
 }
+@media (max-width: 768px) {
+    /* The sitewide mobile .unyl-btn cap (max-width: 160px) would otherwise
+       shrink this button, which is meant to stay full-width. */
+    .unyl-btn.unyl-checkout__submit { max-width: 100% !important; }
+}
 
 /* ===== Order received ===== */
 .unyl-order-received {
