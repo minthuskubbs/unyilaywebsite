@@ -39,7 +39,7 @@ img { max-width: 100%; }
 .unyl-btn {
     display: inline-block;
     font-family: var(--font-sans);
-    font-size: 18px;
+    font-size: 17px;
     color: var(--unyl-btn-text);
     text-decoration: none;
     background: var(--unyl-btn-bg);
