@@ -11,7 +11,7 @@
                 <p class="unyl-contact__flash unyl-contact__flash--error">{{ $errors->first() }}</p>
             @endif
 
-            <p class="unyl-auth__hint">Enter the email address on your account and we'll send you a link to reset your password.</p>
+            <p class="unyl-auth__hint">Enter the email address on your account and we'll send you a 6-digit code to reset your password.</p>
 
             <form method="POST" action="{{ route('password.email') }}" class="unyl-auth__form">
                 @csrf
@@ -19,7 +19,7 @@
                     <label for="email">Email *</label>
                     <input type="email" id="email" name="email" value="{{ old('email') }}" required autofocus />
                 </div>
-                <button type="submit" class="unyl-btn unyl-auth__submit">Send Reset Link</button>
+                <button type="submit" class="unyl-btn unyl-auth__submit">Send Code</button>
             </form>
 
             <p class="unyl-auth__switch">Remembered your password? <a href="{{ route('login') }}">Log in</a></p>

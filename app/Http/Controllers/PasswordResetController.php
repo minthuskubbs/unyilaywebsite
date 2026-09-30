@@ -10,18 +10,22 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
 
 /**
  * Resets a real WordPress customer's password (via the WooCommerce REST
  * API, so WP's own password hashing is used — same reasoning as
- * WordPressAuthService/register()). The reset token itself lives in this
- * app's own `password_reset_tokens` table (Laravel's default), keyed by
- * the WordPress account's email — WordPress is never the token store.
+ * WordPressAuthService/register()). The one-time code lives in this app's
+ * own `password_reset_tokens` table (Laravel's default), keyed by the
+ * WordPress account's email — WordPress is never the code's store.
+ *
+ * Uses a plain 6-digit emailed code rather than a link: a styled HTML
+ * email with a reset-link button was landing nowhere (not even spam) on
+ * the production mail server, while a plain-text email delivered fine —
+ * a short numeric code keeps the email about as plain as that.
  */
 class PasswordResetController extends Controller
 {
-    private const TOKEN_TTL_MINUTES = 60;
+    private const CODE_TTL_MINUTES = 15;
 
     public function __construct(
         private CategoryService $categories,
@@ -50,31 +54,29 @@ class PasswordResetController extends Controller
         // real account, so this form can't be used to check who has an
         // account here (standard practice for any "forgot password" form).
         if ($user) {
-            $plainToken = Str::random(64);
+            $code = (string) random_int(100000, 999999);
 
             DB::table('password_reset_tokens')->updateOrInsert(
                 ['email' => $user->user_email],
-                ['token' => Hash::make($plainToken), 'created_at' => now()]
+                ['token' => Hash::make($code), 'created_at' => now()]
             );
 
-            $resetUrl = route('password.reset', ['token' => $plainToken, 'email' => $user->user_email]);
-
             try {
-                Mail::to($user->user_email)->send(new ResetPasswordMail($resetUrl, $user->display_name ?: $user->user_login));
+                Mail::to($user->user_email)->send(new ResetPasswordMail($code, $user->display_name ?: $user->user_login));
                 Log::info('Password reset email sent', ['email' => $user->user_email]);
             } catch (\Throwable $e) {
                 Log::error('Password reset email failed to send', ['email' => $user->user_email, 'exception' => $e->getMessage()]);
             }
         }
 
-        return back()->with('status', 'If an account exists for that email, we\'ve sent a password reset link.');
+        return redirect()->route('password.reset', ['email' => $validated['email']])
+            ->with('status', 'If an account exists for that email, we\'ve sent a 6-digit code — enter it below.');
     }
 
-    public function showResetForm(Request $request, string $token)
+    public function showResetForm(Request $request)
     {
         return view('auth.reset-password', [
             'categories' => $this->categories->megaMenuGroups(),
-            'token' => $token,
             'email' => $request->query('email', ''),
         ]);
     }
@@ -82,7 +84,7 @@ class PasswordResetController extends Controller
     public function reset(Request $request)
     {
         $validated = $request->validate([
-            'token' => 'required|string',
+            'code' => 'required|string',
             'email' => 'required|email',
             'password' => 'required|string|min:8|confirmed',
         ]);
@@ -90,16 +92,16 @@ class PasswordResetController extends Controller
         $record = DB::table('password_reset_tokens')->where('email', $validated['email'])->first();
 
         $invalid = !$record
-            || !Hash::check($validated['token'], $record->token)
-            || now()->diffInMinutes($record->created_at) > self::TOKEN_TTL_MINUTES;
+            || !Hash::check($validated['code'], $record->token)
+            || now()->diffInMinutes($record->created_at) > self::CODE_TTL_MINUTES;
 
         if ($invalid) {
-            return back()->withErrors(['token' => 'This password reset link is invalid or has expired. Please request a new one.']);
+            return back()->withErrors(['code' => 'This code is invalid or has expired. Please request a new one.']);
         }
 
         $wpUser = DB::connection('wordpress')->table('users')->where('user_email', $validated['email'])->first();
         if (!$wpUser) {
-            return back()->withErrors(['token' => 'This account could not be found.']);
+            return back()->withErrors(['code' => 'This account could not be found.']);
         }
 
         $result = $this->wooCommerce->updateCustomer((int) $wpUser->ID, ['password' => $validated['password']]);
