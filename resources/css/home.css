@@ -83,8 +83,6 @@
     .unyl-btn {
         font-family: var(--font-sans) !important;
         font-size: 15px !important;
-        color: var(--unyl-btn-text) !important;
-        background: var(--unyl-btn-bg) !important;
         border: none !important;
         border-radius: 999px !important;
         padding: 16px 12px !important;
