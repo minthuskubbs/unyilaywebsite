@@ -67,6 +67,18 @@ class CategoryService
         });
     }
 
+    /** All gold jewelry category IDs (the parent plus its subcategories) —
+     * gold products aren't launched yet, so ProductService excludes any
+     * product in one of these categories from search, listings, and
+     * direct product-page access site-wide. */
+    public function goldJewelryCategoryIds(): array
+    {
+        return Cache::remember('categories.gold-jewelry-ids', self::CACHE_TTL, function () {
+            $childIds = $this->termsByParent(self::GOLD_JEWELRY_PARENT_ID)->pluck('term_id')->all();
+            return [self::GOLD_JEWELRY_PARENT_ID, ...$childIds];
+        });
+    }
+
     /** Sidebar tree for the brass listing page — brass's own subcategories,
      * matching the jewelrySidebarTree()/sidebarTree() pattern. */
     public function brassSidebarTree(): array

@@ -9,8 +9,34 @@ class ProductService
 {
     private const CACHE_TTL = 900; // 15 minutes
 
-    public function __construct(private ProductImageResolver $images)
+    public function __construct(
+        private ProductImageResolver $images,
+        private CategoryService $categories,
+    ) {
+    }
+
+    /**
+     * Gold jewelry hasn't launched yet — excludes any product in that
+     * category tree from a query, regardless of which other categories
+     * it's also in. Applied to every "browse everything" query (search,
+     * popular, unscoped paginate) and to direct slug lookups, so gold
+     * products are unreachable site-wide rather than just hidden from
+     * their own category page.
+     */
+    private function excludeGoldJewelry($query, string $postIdColumn = 'p.ID')
     {
+        $goldIds = $this->categories->goldJewelryCategoryIds();
+        if (empty($goldIds)) {
+            return $query;
+        }
+
+        return $query->whereNotIn($postIdColumn, function ($q) use ($goldIds) {
+            $q->select('tr.object_id')
+                ->from('term_relationships as tr')
+                ->join('term_taxonomy as tt', 'tr.term_taxonomy_id', '=', 'tt.term_taxonomy_id')
+                ->whereIn('tt.term_id', $goldIds)
+                ->where('tt.taxonomy', 'product_cat');
+        });
     }
 
     /**
@@ -56,6 +82,12 @@ class ProductService
                 ->get()
                 ->map(fn ($c) => ['term_id' => $c->term_id, 'name' => $c->name, 'slug' => $c->slug])
                 ->all();
+
+            // Gold jewelry hasn't launched — treat its products as not found
+            // even via a direct/guessed URL, not just hidden from listings.
+            if (array_intersect(array_column($categories, 'term_id'), $this->categories->goldJewelryCategoryIds())) {
+                return null;
+            }
 
             $galleryIds = array_filter(array_map('intval', array_filter(explode(',', $meta->get('_product_image_gallery', '')))));
             $thumbnailId = (int) $meta->get('_thumbnail_id', 0);
@@ -359,13 +391,15 @@ class ProductService
     public function popular(int $limit = 8): array
     {
         return Cache::remember("products.popular.{$limit}", self::CACHE_TTL, function () use ($limit) {
-            $rows = DB::connection('wordpress')
+            $query = DB::connection('wordpress')
                 ->table('posts as p')
                 ->join('postmeta as sales', function ($j) {
                     $j->on('sales.post_id', '=', 'p.ID')->where('sales.meta_key', 'total_sales');
                 })
                 ->where('p.post_type', 'product')
-                ->where('p.post_status', 'publish')
+                ->where('p.post_status', 'publish');
+
+            $rows = $this->excludeGoldJewelry($query)
                 ->select('p.ID', 'p.post_title', 'p.post_name')
                 ->orderByDesc(DB::raw(DB::connection('wordpress')->getTablePrefix() . 'sales.meta_value + 0'))
                 ->limit($limit)
@@ -399,6 +433,8 @@ class ProductService
             ->table('posts as p')
             ->where('p.post_type', 'product')
             ->where('p.post_status', 'publish');
+
+        $query = $this->excludeGoldJewelry($query);
 
         if ($categoryId !== null) {
             $categoryIds = is_array($categoryId) ? $categoryId : [$categoryId];
@@ -458,11 +494,13 @@ class ProductService
             return [];
         }
 
-        $rows = DB::connection('wordpress')
+        $query = DB::connection('wordpress')
             ->table('posts as p')
             ->where('p.post_type', 'product')
             ->where('p.post_status', 'publish')
-            ->where('p.post_title', 'like', '%' . str_replace(['%', '_'], ['\\%', '\\_'], $term) . '%')
+            ->where('p.post_title', 'like', '%' . str_replace(['%', '_'], ['\\%', '\\_'], $term) . '%');
+
+        $rows = $this->excludeGoldJewelry($query)
             ->select('p.ID', 'p.post_title', 'p.post_name')
             ->orderBy('p.post_title')
             ->limit($limit)
