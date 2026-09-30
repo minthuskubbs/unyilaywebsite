@@ -155,7 +155,7 @@
     max-width: 335px;
 }
 .unyl-hcard__cap h3 { font-family: var(--font-serif); font-size: clamp(1.4rem, 3vw, 36px); line-height: 1.2; font-weight: 400; margin: 0 0 10px; }
-.unyl-hcard__cap p { font-family: var(--font-sans); font-size: 18px; line-height: 1.4; color: rgba(242, 242, 242, 0.85); margin: 0 0 16px; }
+.unyl-hcard__cap p { font-family: var(--font-sans); font-size: 18px; line-height: 1.4; color: rgba(242, 242, 242, 0.85); margin: 5px 0 20px; }
 /* Figma spec (node 103:1931 "Brand Quote"): 36px Playfair Display, not body copy.
    Selector needs to out-specificity ".unyl-hcard__cap p" above. */
 .unyl-hcard__cap p.unyl-hcard__lead { font-family: var(--font-serif); font-weight: 400; font-size: clamp(1.4rem, 3vw, 36px); line-height: 1.2; color: var(--unyl-text); margin: 0; max-width: none; }
