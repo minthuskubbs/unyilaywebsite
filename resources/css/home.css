@@ -54,12 +54,33 @@
     .unyl-hero__media { order: 2; }
     .unyl-hero__container { order: 1; position: static; max-width: 100%; transform: none; }
     .unyl-hero__caption {
-        position: absolute;
-        top: 0;
-        padding: 165px 6vw 32px;
-        background: linear-gradient(180deg, #464542bf, #46454273 55%, #46454200);
+        position: absolute !important;
+        top: 0 !important;
+        padding: 110px 6vw 32px !important;
+        background: linear-gradient(180deg, #464542bf, #46454273 55%, #46454200) !important;
     }
     .unyl-hero__caption-inner { width: 100%; max-width: 330px; }
+    .unyl-hero__subtitle {
+        font-family: var(--font-sans) !important;
+        font-size: 16px !important;
+        line-height: 1.3 !important;
+        color: var(--unyl-text-dim) !important;
+        margin: 0 0 22px !important;
+        max-width: 460px !important;
+    }
+    .unyl-hero .unyl-btn {
+        font-family: var(--font-sans) !important;
+        font-size: 15px !important;
+        color: var(--unyl-btn-text) !important;
+        background: var(--unyl-btn-bg) !important;
+        border: none !important;
+        border-radius: 999px !important;
+        padding: 16px 12px !important;
+        min-width: 130px !important;
+        height: 50px !important;
+        margin-bottom: 20px !important;
+        max-width: 160px !important;
+    }
     .unyl-hero__media img {
         display: block;
         width: 100% !important;
