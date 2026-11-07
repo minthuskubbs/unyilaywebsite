@@ -32,6 +32,20 @@ final class BrassShowroomManagementTest extends TestCase
         $this->get('/brass-art-gallery')->assertOk();
     }
 
+    public function test_each_gallery_address_has_its_own_link_preview(): void
+    {
+        $this->get('/brass-art-gallery')->assertOk()
+            ->assertSee('<title>ကြေးဝါအနုပညာပြခန်း — Brass Art Gallery</title>', false)
+            ->assertSee('<meta property="og:title" content="ကြေးဝါအနုပညာပြခန်း — Brass Art Gallery">', false)
+            ->assertSee('<meta property="og:url" content="'.url('/brass-art-gallery').'">', false)
+            ->assertSee('<meta property="og:image" content="'.asset('images/brand/android-chrome-512x512.png').'">', false);
+
+        $this->get('/silver-art-gallery')->assertOk()
+            ->assertSee('<title>ငွေထည်အနုပညာပြခန်း — Silver Art Gallery</title>', false)
+            ->assertSee('<meta property="og:title" content="ငွေထည်အနုပညာပြခန်း — Silver Art Gallery">', false)
+            ->assertSee('<meta property="og:url" content="'.url('/silver-art-gallery').'">', false);
+    }
+
     public function test_older_addresses_lead_to_the_matching_gallery(): void
     {
         foreach ([
