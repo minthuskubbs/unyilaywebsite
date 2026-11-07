@@ -58,9 +58,16 @@ final class BrassShowroomController extends Controller
     private function activeAssetUrls(BrassShowroomFrontendReleaseManager $frontend): array
     {
         $release = $frontend->activeId();
+        // Assets are cached as immutable. Release ids never change content, but "bundled" does
+        // on each deploy, so its URLs carry the file time to make browsers fetch the new copy.
+        $url = fn (string $asset, string $file) => route('brass-showroom.frontend-asset', [
+            'release' => $release,
+            'asset' => $asset,
+        ] + ($release === 'bundled' ? ['v' => filemtime(public_path('vendor/brass-showroom/'.$file))] : []));
+
         return [
-            'stylesheet' => route('brass-showroom.frontend-asset', ['release' => $release, 'asset' => 'stylesheet']),
-            'javascript' => route('brass-showroom.frontend-asset', ['release' => $release, 'asset' => 'javascript']),
+            'stylesheet' => $url('stylesheet', 'brass-showroom.css'),
+            'javascript' => $url('javascript', 'brass-showroom.js'),
         ];
     }
 

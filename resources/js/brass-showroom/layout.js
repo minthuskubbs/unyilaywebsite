@@ -110,6 +110,7 @@ function hallRuns() {
 // Returns {placed: [{index, x, y, z, rotationY, labelBelow}], titles: [{x, y, z, rotationY, my, en, width}], overflow}.
 export function layoutSilver(items) {
   const groups = groupSilver(items);
+  if (!groups.length) return { placed: [], titles: [], overflow: [] };
   const runs = hallRuns();
   // The group with the widest single piece becomes the centrepiece of the feature wall.
   const featureIndex = groups.reduce((best, g, i) => (Math.max(...g.items.map((a) => size(a).w)) > Math.max(...groups[best].items.map((a) => size(a).w)) ? i : best), 0);
