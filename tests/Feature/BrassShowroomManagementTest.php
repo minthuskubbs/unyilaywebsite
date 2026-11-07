@@ -17,6 +17,15 @@ final class BrassShowroomManagementTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_bundled_assets_are_versioned_so_deploys_bypass_the_immutable_cache(): void
+    {
+        $response = $this->get('/brass')->assertOk();
+
+        $response->assertSee('assets/bundled/javascript?v='.filemtime(public_path('vendor/brass-showroom/brass-showroom.js')), false);
+        $response->assertSee('assets/bundled/stylesheet?v='.filemtime(public_path('vendor/brass-showroom/brass-showroom.css')), false);
+        $this->get('/brass/assets/bundled/javascript?v=1')->assertOk();
+    }
+
     public function test_mcp_endpoint_rejects_anonymous_requests(): void
     {
         $this->postJson('/mcp/brass-showroom', [
