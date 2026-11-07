@@ -23,7 +23,7 @@ async function initialize(root){
  // The silver hall comes first: without a parameter visitors start at the Silver Entrance.
  // Each entrance has its own link: ?entrance=silver or ?entrance=brass (a #silver hash also works,
  // so signed preview URLs can be opened at either entrance without breaking their signature).
- const readEntrance=()=>{const p=new URLSearchParams(window.location.search).get('entrance')||(window.location.hash.match(/silver|brass/)||[])[0];return p==='brass'?'brass':'silver';};
+ const readEntrance=()=>{const p=new URLSearchParams(window.location.search).get('entrance')||(window.location.pathname.match(/(silver|brass)-art-gallery/)||[])[1]||(window.location.hash.match(/silver|brass/)||[])[0];return p==='brass'?'brass':'silver';};
  let entrance=readEntrance(),catalogRoom=entrance,zone=entrance;
  try{config=await loadConfig(root);}catch{root.classList.add('bs-config-error');config=structuredClone(defaultConfig);}
  const artworks=config.artworks;const roomIndexes={brass:[],silver:[]};artworks.forEach((a,i)=>roomIndexes[roomOf(a)].push(i));if(!roomIndexes.silver.length&&entrance==='silver')entrance=catalogRoom=zone='brass';
@@ -69,7 +69,7 @@ async function initialize(root){
  if(tabButtons.length>1)q('.bs-catalog-head>div')?.append(tabs);
  // Switch between the two entrances from the welcome card.
  const switchButton=el('button','bs-link bs-switch-entrance');switchButton.type='button';if(roomIndexes.silver.length)q('[data-bs-welcome]')?.append(switchButton);
- on(switchButton,'click',()=>{entrance=entrance==='silver'?'brass':'silver';catalogRoom=zone=entrance;try{const url=new URL(window.location.href);if(url.searchParams.has('signature'))url.hash=entrance;else url.searchParams.set('entrance',entrance);history.replaceState(null,'',url);}catch{}controls?.reset(entrance);renderRoomText();});
+ on(switchButton,'click',()=>{entrance=entrance==='silver'?'brass':'silver';catalogRoom=zone=entrance;try{const url=new URL(window.location.href);if(url.searchParams.has('signature'))url.hash=entrance;else{url.searchParams.delete('entrance');url.pathname=url.pathname.replace(/(silver|brass)-art-gallery/,entrance+'-art-gallery');}history.replaceState(null,'',url);}catch{}controls?.reset(entrance);renderRoomText();});
  function renderRoomText(){
   const silver=entrance==='silver';
   const hero=q('[data-bs-welcome] h1'),heroCopy=q('[data-bs-welcome]>p');if(hero)hero.textContent=copy[lang][silver?'silverHeroTitle':'heroTitle'];if(heroCopy)heroCopy.textContent=copy[lang][silver?'silverHeroCopy':'heroCopy'];
