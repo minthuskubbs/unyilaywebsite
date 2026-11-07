@@ -85,7 +85,7 @@
                                 @endif
                             </a>
                             @if ($group['key'] === 'brass')
-                                <a class="unyl-menu-gallery-link" href="{{ url('/brass') }}">Brass Art Gallery</a>
+                                <a class="unyl-menu-gallery-link" href="{{ url('/brass-showroom') }}">Brass Art Gallery</a>
                             @endif
                             <div class="unyl-menu-stage2__teasers">
                                 @if ($group['popular_product'])
@@ -185,7 +185,7 @@
             </div>
 
             @if ($group['key'] === 'brass')
-                <a class="unyl-menu-gallery-link" href="{{ url('/brass') }}">Brass Art Gallery</a>
+                <a class="unyl-menu-gallery-link" href="{{ url('/brass-showroom') }}">Brass Art Gallery</a>
             @endif
 
             @if (in_array($group['key'], ['big-items', 'jewelry-silver', 'brass'], true))

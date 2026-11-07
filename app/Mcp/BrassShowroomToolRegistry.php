@@ -28,6 +28,8 @@ final class BrassShowroomToolRegistry
             $this->definition('replace_artwork_image_draft', 'Replace one draft artwork image with validated PNG, JPEG, or WebP base64 bytes.', [
                 'id' => $this->string(), 'filename' => $this->string(), 'image_base64' => $this->string(),
             ], ['id', 'filename', 'image_base64']),
+            $this->definition('add_artwork_draft', 'Add a new artwork to the private draft. room "silver" (default) is hung automatically at its physical size; room "brass" needs wall (left, right, back or front), slot (metres along the wall, -3 to 3: x on back/front walls, z on side walls) and height. Provide image_base64 (PNG/JPEG/WebP) or image_path under /vendor/brass-showroom/, and optionally a small thumbnail.', $this->addArtworkProperties(), ['id', 'title_my', 'title_en', 'price_mmk', 'width_inches', 'height_inches']),
+            $this->definition('remove_artwork_draft', 'Remove one artwork from the private draft. Publish history keeps older versions restorable.', ['id' => $this->string()], ['id']),
             $this->definition('update_showroom_layout_draft', 'Update private room colors, lighting, exposure, and bench layout.', $this->layoutProperties()),
             $this->definition('create_showroom_preview', 'Create a short-lived signed preview URL for the private draft.'),
             $this->definition('publish_showroom', 'Publish the reviewed draft using its exact revision to prevent concurrent overwrite.', [
@@ -61,6 +63,8 @@ final class BrassShowroomToolRegistry
             'get_showroom_state' => $this->getState($arguments),
             'update_artwork_draft' => $this->updateArtwork($arguments, $userId),
             'replace_artwork_image_draft' => $this->replaceImage($arguments, $userId),
+            'add_artwork_draft' => $this->addArtwork($arguments, $userId),
+            'remove_artwork_draft' => $this->removeArtwork($arguments, $userId),
             'update_showroom_layout_draft' => $this->updateLayout($arguments, $userId),
             'create_showroom_preview' => $this->showroomPreview($arguments),
             'publish_showroom' => $this->publish($arguments, $userId),
@@ -88,9 +92,10 @@ final class BrassShowroomToolRegistry
             'id' => ['required', 'alpha_dash:ascii', 'max:40'], 'title_my' => ['sometimes', 'string', 'max:120'],
             'title_en' => ['sometimes', 'string', 'max:120'], 'price_mmk' => ['sometimes', 'integer', 'between:0,1000000000'],
             'width_inches' => ['sometimes', 'numeric', 'between:4,80'], 'height_inches' => ['sometimes', 'numeric', 'between:4,80'],
-            'orientation' => ['sometimes', 'in:landscape,portrait'], 'wall' => ['sometimes', 'in:left,right,back'],
-            'slot' => ['sometimes', 'numeric', 'between:-1.5,1.5'], 'height' => ['sometimes', 'numeric', 'between:0.8,2.2'],
+            'orientation' => ['sometimes', 'in:landscape,portrait'], 'wall' => ['sometimes', 'in:left,right,back,front,auto'], 'room' => ['sometimes', 'in:brass,silver'],
+            'slot' => ['sometimes', 'numeric', 'between:-3,3'], 'height' => ['sometimes', 'numeric', 'between:0.8,2.2'],
             'scale' => ['sometimes', 'numeric', 'between:0.5,1.6'], 'light_intensity' => ['sometimes', 'numeric', 'between:0,15'],
+            'notion_page_id' => ['sometimes', 'nullable', 'regex:/^[0-9a-fA-F]{8}-?[0-9a-fA-F]{4}-?[0-9a-fA-F]{4}-?[0-9a-fA-F]{4}-?[0-9a-fA-F]{12}$/'],
             'crop_x' => ['sometimes', 'integer', 'min:0', 'max:20000', 'required_with:crop_y,crop_width,crop_height'],
             'crop_y' => ['sometimes', 'integer', 'min:0', 'max:20000', 'required_with:crop_x,crop_width,crop_height'],
             'crop_width' => ['sometimes', 'integer', 'between:1,20000', 'required_with:crop_x,crop_y,crop_height'],
@@ -98,6 +103,31 @@ final class BrassShowroomToolRegistry
         ])->validate();
         $id = $input['id']; unset($input['id']);
         return $this->showroom->updateArtwork($id, $input, $userId);
+    }
+
+    private function addArtwork(array $input, int $userId): array
+    {
+        $input = validator($input, [
+            'id' => ['required', 'alpha_dash:ascii', 'max:40'], 'room' => ['sometimes', 'in:brass,silver'],
+            'title_my' => ['required', 'string', 'max:120'], 'title_en' => ['required', 'string', 'max:120'],
+            'price_mmk' => ['required', 'integer', 'between:0,1000000000'],
+            'width_inches' => ['required', 'numeric', 'between:4,80'], 'height_inches' => ['required', 'numeric', 'between:4,80'],
+            'orientation' => ['sometimes', 'in:landscape,portrait'],
+            'image_base64' => ['required_without:image_path', 'prohibits:image_path', 'string'], 'image_path' => ['required_without:image_base64', 'string', 'max:255'],
+            'filename' => ['sometimes', 'string', 'max:120'],
+            'thumbnail_base64' => ['sometimes', 'prohibits:thumbnail_path', 'string'], 'thumbnail_path' => ['sometimes', 'string', 'max:255'],
+            'wall' => ['sometimes', 'in:left,right,back,front'], 'slot' => ['sometimes', 'numeric', 'between:-3,3'],
+            'height' => ['sometimes', 'numeric', 'between:0.8,2.2'], 'scale' => ['sometimes', 'numeric', 'between:0.5,1.6'],
+            'light_intensity' => ['sometimes', 'numeric', 'between:0,15'], 'position' => ['sometimes', 'integer', 'min:0'],
+            'notion_page_id' => ['sometimes', 'nullable', 'regex:/^[0-9a-fA-F]{8}-?[0-9a-fA-F]{4}-?[0-9a-fA-F]{4}-?[0-9a-fA-F]{4}-?[0-9a-fA-F]{12}$/'],
+        ])->validate();
+        return $this->showroom->addArtwork($input, $userId);
+    }
+
+    private function removeArtwork(array $input, int $userId): array
+    {
+        $input = validator($input, ['id' => ['required', 'alpha_dash:ascii', 'max:40']])->validate();
+        return $this->showroom->removeArtwork($input['id'], $userId);
     }
 
     private function replaceImage(array $input, int $userId): array
@@ -179,6 +209,7 @@ final class BrassShowroomToolRegistry
     private function integer(): array { return ['type' => 'integer']; }
     private function number(): array { return ['type' => 'number']; }
     private function boolean(): array { return ['type' => 'boolean']; }
-    private function artworkProperties(): array { return ['id'=>$this->string(),'title_my'=>$this->string(),'title_en'=>$this->string(),'price_mmk'=>$this->integer(),'width_inches'=>$this->number(),'height_inches'=>$this->number(),'orientation'=>$this->string(['landscape','portrait']),'wall'=>$this->string(['left','right','back']),'slot'=>$this->number(),'height'=>$this->number(),'scale'=>$this->number(),'light_intensity'=>$this->number(),'crop_x'=>$this->integer(),'crop_y'=>$this->integer(),'crop_width'=>$this->integer(),'crop_height'=>$this->integer()]; }
+    private function addArtworkProperties(): array { return ['id'=>$this->string(),'room'=>$this->string(['silver','brass']),'title_my'=>$this->string(),'title_en'=>$this->string(),'price_mmk'=>$this->integer(),'width_inches'=>$this->number(),'height_inches'=>$this->number(),'orientation'=>$this->string(['landscape','portrait']),'image_base64'=>$this->string(),'image_path'=>$this->string(),'filename'=>$this->string(),'thumbnail_base64'=>$this->string(),'thumbnail_path'=>$this->string(),'wall'=>$this->string(['left','right','back','front']),'slot'=>$this->number(),'height'=>$this->number(),'scale'=>$this->number(),'light_intensity'=>$this->number(),'position'=>$this->integer(),'notion_page_id'=>$this->string()]; }
+    private function artworkProperties(): array { return ['id'=>$this->string(),'room'=>$this->string(['brass','silver']),'title_my'=>$this->string(),'title_en'=>$this->string(),'price_mmk'=>$this->integer(),'width_inches'=>$this->number(),'height_inches'=>$this->number(),'orientation'=>$this->string(['landscape','portrait']),'wall'=>$this->string(['left','right','back','front','auto']),'slot'=>$this->number(),'height'=>$this->number(),'scale'=>$this->number(),'light_intensity'=>$this->number(),'notion_page_id'=>$this->string(),'crop_x'=>$this->integer(),'crop_y'=>$this->integer(),'crop_width'=>$this->integer(),'crop_height'=>$this->integer()]; }
     private function layoutProperties(): array { return ['wall_color'=>$this->string(),'floor_color'=>$this->string(),'ceiling_color'=>$this->string(),'spotlight_color'=>$this->string(),'ambient_intensity'=>$this->number(),'hemisphere_intensity'=>$this->number(),'bounce_intensity'=>$this->number(),'tone_mapping_exposure'=>$this->number(),'bench_visible'=>$this->boolean(),'bench_x'=>$this->number(),'bench_z'=>$this->number()]; }
 }
