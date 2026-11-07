@@ -11,9 +11,10 @@ use Illuminate\Support\Facades\URL;
 
 final class BrassShowroomController extends Controller
 {
-    public function show(BrassShowroomManager $showroom, BrassShowroomFrontendReleaseManager $frontend): View
+    public function show(Request $request, BrassShowroomManager $showroom, BrassShowroomFrontendReleaseManager $frontend): View
     {
         return view('brass-showroom-page', [
+            'gallery' => $request->routeIs('brass-showroom.brass') ? 'brass' : 'silver',
             'showroomConfig' => $showroom->view('published')['config'],
             'frontendAssetUrls' => $this->activeAssetUrls($frontend),
         ]);
