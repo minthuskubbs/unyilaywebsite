@@ -19,11 +19,19 @@ final class BrassShowroomManagementTest extends TestCase
 
     public function test_bundled_assets_are_versioned_so_deploys_bypass_the_immutable_cache(): void
     {
-        $response = $this->get('/brass')->assertOk();
+        $response = $this->get('/art-gallery')->assertOk();
 
         $response->assertSee('assets/bundled/javascript?v='.filemtime(public_path('vendor/brass-showroom/brass-showroom.js')), false);
         $response->assertSee('assets/bundled/stylesheet?v='.filemtime(public_path('vendor/brass-showroom/brass-showroom.css')), false);
         $this->get('/brass/assets/bundled/javascript?v=1')->assertOk();
+    }
+
+    public function test_old_and_short_links_lead_to_the_art_gallery_with_the_right_entrance(): void
+    {
+        $this->get('/brass')->assertStatus(301)->assertRedirect('/art-gallery');
+        $this->get('/brass?entrance=silver')->assertStatus(301)->assertRedirect('/art-gallery?entrance=silver');
+        $this->get('/silver-showroom')->assertRedirect('/art-gallery?entrance=silver');
+        $this->get('/brass-showroom')->assertRedirect('/art-gallery?entrance=brass');
     }
 
     public function test_mcp_endpoint_rejects_anonymous_requests(): void

@@ -55,10 +55,16 @@ Route::get('/news-articles/{slug}', [PageController::class, 'newsShow'])->name('
 // Standalone 3D showroom (no site header/footer — full-viewport experience
 // with its own topbar). Published config is managed via the authenticated
 // MCP layer in routes/ai.php; this route only ever renders the public view.
-Route::get('/brass', [BrassShowroomController::class, 'show'])->name('brass-showroom.show');
+Route::get('/art-gallery', [BrassShowroomController::class, 'show'])->name('brass-showroom.show');
+// The old address keeps working, including any ?entrance= on links already shared.
+Route::get('/brass', function () {
+    $query = request()->getQueryString();
+
+    return redirect('/art-gallery'.($query ? '?'.$query : ''), 301);
+});
 // Short entrance links: the showroom reads ?entrance= to choose the starting room.
-Route::redirect('/silver-showroom', '/brass?entrance=silver');
-Route::redirect('/brass-showroom', '/brass?entrance=brass');
+Route::redirect('/silver-showroom', '/art-gallery?entrance=silver');
+Route::redirect('/brass-showroom', '/art-gallery?entrance=brass');
 Route::get('/brass/preview', [BrassShowroomController::class, 'preview'])
     ->middleware(['signed', 'throttle:30,1'])
     ->name('brass-showroom.preview');
