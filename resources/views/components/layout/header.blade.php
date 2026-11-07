@@ -84,7 +84,9 @@
                                     <img src="{{ $group['card_image'] ?? $group['image'] }}" alt="" loading="lazy" />
                                 @endif
                             </a>
-                            @if ($group['key'] === 'brass')
+                            @if ($group['key'] === 'big-items')
+                                <a class="unyl-menu-gallery-link" href="{{ url('/silver-showroom') }}">Silver Art Gallery</a>
+                            @elseif ($group['key'] === 'brass')
                                 <a class="unyl-menu-gallery-link" href="{{ url('/brass-showroom') }}">Brass Art Gallery</a>
                             @endif
                             <div class="unyl-menu-stage2__teasers">
@@ -184,7 +186,9 @@
                 <span class="unyl-menu-mobile-title">{{ $group['name'] }}</span>
             </div>
 
-            @if ($group['key'] === 'brass')
+            @if ($group['key'] === 'big-items')
+                <a class="unyl-menu-gallery-link" href="{{ url('/silver-showroom') }}">Silver Art Gallery</a>
+            @elseif ($group['key'] === 'brass')
                 <a class="unyl-menu-gallery-link" href="{{ url('/brass-showroom') }}">Brass Art Gallery</a>
             @endif
 
