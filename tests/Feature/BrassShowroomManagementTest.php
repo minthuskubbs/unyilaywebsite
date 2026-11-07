@@ -170,6 +170,69 @@ final class BrassShowroomManagementTest extends TestCase
         $this->assertNull(collect($draft['config']['artworks'])->firstWhere('id', 's-remove-me'));
     }
 
+    /** A live showroom that lacks one catalogue piece, with no unpublished edits. */
+    private function publishShowroomMissingBoat(BrassShowroomManager $manager): int
+    {
+        $draft = $manager->removeArtwork('boat', 1);
+        $manager->publish($draft['draft_revision'], 'Older live showroom', 1);
+
+        return count($manager->view('published')['config']['artworks']);
+    }
+
+    public function test_catalogue_import_fills_the_draft_and_only_goes_live_on_publish(): void
+    {
+        $manager = app(BrassShowroomManager::class);
+        $liveCount = $this->publishShowroomMissingBoat($manager);
+
+        $this->artisan('brass-showroom:import-catalogue')
+            ->expectsOutputToContain('105 silver and 20 brass')
+            ->assertSuccessful();
+
+        $draft = $manager->view('draft');
+        $this->assertCount(125, $draft['config']['artworks']);
+        $this->assertCount($liveCount, $manager->view('published')['config']['artworks']);
+
+        $this->artisan('brass-showroom:import-catalogue --publish='.$draft['draft_revision'])->assertSuccessful();
+        $this->assertCount(125, $manager->view('published')['config']['artworks']);
+    }
+
+    public function test_catalogue_import_keeps_the_draft_revision_when_rerun_for_a_new_preview_link(): void
+    {
+        $manager = app(BrassShowroomManager::class);
+        $this->publishShowroomMissingBoat($manager);
+        $this->artisan('brass-showroom:import-catalogue')->assertSuccessful();
+        $revision = $manager->view('draft')['draft_revision'];
+
+        $this->artisan('brass-showroom:import-catalogue')->assertSuccessful();
+
+        $this->assertSame($revision, $manager->view('draft')['draft_revision']);
+    }
+
+    public function test_catalogue_import_will_not_overwrite_unpublished_edits_without_force(): void
+    {
+        $manager = app(BrassShowroomManager::class);
+        $this->publishShowroomMissingBoat($manager);
+        $manager->updateArtwork('lawka', ['price_mmk' => 999000], 1);
+
+        $this->artisan('brass-showroom:import-catalogue')->assertFailed();
+        $this->assertSame(999000, collect($manager->view('draft')['config']['artworks'])->firstWhere('id', 'lawka')['priceMmk']);
+
+        $this->artisan('brass-showroom:import-catalogue --force')->assertSuccessful();
+        $this->assertCount(125, $manager->view('draft')['config']['artworks']);
+    }
+
+    public function test_catalogue_publish_rejects_a_stale_draft_revision(): void
+    {
+        $manager = app(BrassShowroomManager::class);
+        $liveCount = $this->publishShowroomMissingBoat($manager);
+        $this->artisan('brass-showroom:import-catalogue')->assertSuccessful();
+        $stale = $manager->view('draft')['draft_revision'] - 1;
+
+        $this->artisan('brass-showroom:import-catalogue --publish='.$stale)->assertFailed();
+
+        $this->assertCount($liveCount, $manager->view('published')['config']['artworks']);
+    }
+
     private function fakeNotion(): void
     {
         config()->set('brass-showroom.notion', ['sync_enabled' => true, 'token' => 'secret_test', 'databases' => ['db-silver', 'db-brass'], 'price_property' => 'Sale Price', 'version' => '2022-06-28']);

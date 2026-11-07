@@ -375,6 +375,12 @@ final class BrassShowroomManager
         });
     }
 
+    /** Replace the private draft with the prepared catalogue in default.json. The live showroom is untouched until publish. */
+    public function importCatalogueToDraft(int $userId): array
+    {
+        return $this->mutate(fn (array $config): array => $this->defaults(), $userId);
+    }
+
     public function restoreToDraft(int $revision, int $userId): array
     {
         $state = $this->state();
