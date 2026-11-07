@@ -56,6 +56,9 @@ Route::get('/news-articles/{slug}', [PageController::class, 'newsShow'])->name('
 // with its own topbar). Published config is managed via the authenticated
 // MCP layer in routes/ai.php; this route only ever renders the public view.
 Route::get('/brass', [BrassShowroomController::class, 'show'])->name('brass-showroom.show');
+// Short entrance links: the showroom reads ?entrance= to choose the starting room.
+Route::redirect('/silver-showroom', '/brass?entrance=silver');
+Route::redirect('/brass-showroom', '/brass?entrance=brass');
 Route::get('/brass/preview', [BrassShowroomController::class, 'preview'])
     ->middleware(['signed', 'throttle:30,1'])
     ->name('brass-showroom.preview');

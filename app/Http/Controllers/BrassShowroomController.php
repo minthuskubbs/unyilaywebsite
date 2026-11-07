@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\BrassShowroomFrontendReleaseManager;
 use App\Services\BrassShowroomManager;
+use App\Services\BrassShowroomFrontendReleaseManager;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
 
 final class BrassShowroomController extends Controller
 {
     public function show(BrassShowroomManager $showroom, BrassShowroomFrontendReleaseManager $frontend): View
     {
-        return view('pages.brass', [
+        return view('brass-showroom-page', [
             'showroomConfig' => $showroom->view('published')['config'],
             'frontendAssetUrls' => $this->activeAssetUrls($frontend),
         ]);
@@ -23,7 +23,7 @@ final class BrassShowroomController extends Controller
     {
         abort_unless($request->hasValidSignature(), 403);
 
-        return view('pages.brass', [
+        return view('brass-showroom-page', [
             'showroomConfig' => $showroom->view('draft')['config'],
             'frontendAssetUrls' => $this->activeAssetUrls($frontend),
         ]);
@@ -35,7 +35,7 @@ final class BrassShowroomController extends Controller
         $frontend->metadata($release);
         $expires = now()->addMinutes((int) config('brass-showroom.preview_minutes', 20));
 
-        return view('pages.brass', [
+        return view('brass-showroom-page', [
             'showroomConfig' => $showroom->view('draft')['config'],
             'frontendAssetUrls' => [
                 'stylesheet' => URL::temporarySignedRoute('brass-showroom.frontend-preview-asset', $expires, ['release' => $release, 'asset' => 'stylesheet']),
@@ -52,14 +52,12 @@ final class BrassShowroomController extends Controller
     public function frontendPreviewAsset(Request $request, string $release, string $asset, BrassShowroomFrontendReleaseManager $frontend): Response
     {
         abort_unless($request->hasValidSignature(), 403);
-
         return $this->assetResponse($frontend->asset($release, $asset));
     }
 
     private function activeAssetUrls(BrassShowroomFrontendReleaseManager $frontend): array
     {
         $release = $frontend->activeId();
-
         return [
             'stylesheet' => route('brass-showroom.frontend-asset', ['release' => $release, 'asset' => 'stylesheet']),
             'javascript' => route('brass-showroom.frontend-asset', ['release' => $release, 'asset' => 'javascript']),
