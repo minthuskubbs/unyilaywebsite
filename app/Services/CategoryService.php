@@ -143,7 +143,7 @@ class CategoryService
                     'name' => 'Brass',
                     'description' => 'Affordable elegance. Handcrafted brass items perfect for thoughtful gifts.',
                     'url' => url('/brass-shop'),
-                    'image' => asset('images/menu/brass-thumbnail.webp'),
+                    'image' => asset('images/menu/brass-thumbnail.png'),
                     'card_image' => asset('images/menu/brass-all-items.jpg'),
                     'categories' => $brassCategories->map(fn ($t) => ['term_id' => $t->term_id, 'name' => $t->name, 'slug' => $t->slug])->all(),
                     'popular_product' => null,
