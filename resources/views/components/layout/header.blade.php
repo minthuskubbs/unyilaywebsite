@@ -77,6 +77,15 @@
                             @endforeach
                         </div>
 
+                        @if (!empty($group['entrances']))
+                        <div class="unyl-menu-stage2__entrances">
+                            @foreach ($group['entrances'] as $entrance)
+                                <a class="unyl-menu-card unyl-menu-card--entrance" href="{{ $entrance['url'] }}">
+                                    <img src="{{ $entrance['image'] }}" alt="{{ $entrance['name'] }}" loading="lazy" />
+                                </a>
+                            @endforeach
+                        </div>
+                        @else
                         <div class="unyl-menu-stage2__middle">
                             <a class="unyl-menu-card unyl-menu-card--all" href="{{ $group['url'] }}">
                                 <span class="unyl-menu-card__label">All Items</span>
@@ -115,6 +124,7 @@
                                 <a href="{{ url('/product-category/' . $cat['slug']) }}">{{ $cat['name'] }}</a>
                             @endforeach
                         </div>
+                        @endif
                     </div>
                 @endforeach
             </div>
@@ -192,7 +202,15 @@
                 <a class="unyl-menu-gallery-link" href="{{ url('/brass-art-gallery') }}">Brass Art Gallery</a>
             @endif
 
-            @if (in_array($group['key'], ['big-items', 'jewelry-silver', 'brass'], true))
+            @if (!empty($group['entrances']))
+                <div class="unyl-menu-mobile-entrances">
+                    @foreach ($group['entrances'] as $entrance)
+                        <a class="unyl-menu-card unyl-menu-card--entrance" href="{{ $entrance['url'] }}">
+                            <img src="{{ $entrance['image'] }}" alt="{{ $entrance['name'] }}" loading="lazy" />
+                        </a>
+                    @endforeach
+                </div>
+            @elseif (in_array($group['key'], ['big-items', 'jewelry-silver', 'brass'], true))
                 <a class="unyl-menu-card unyl-menu-card--all unyl-menu-mobile-all" href="{{ $group['url'] }}">
                     <span class="unyl-menu-card__label">All Items</span>
                     @if ($group['card_image'] ?? $group['image'])
@@ -232,12 +250,14 @@
                 </div>
             @endif
 
+            @if (!empty($group['categories']))
             <div class="unyl-menu-mobile-categories">
                 <span class="unyl-menu-mobile-categories__label">Categories</span>
                 @foreach ($group['categories'] as $cat)
                     <a href="{{ url('/product-category/' . $cat['slug']) }}">{{ $cat['name'] }}</a>
                 @endforeach
             </div>
+            @endif
         </div>
     @endforeach
     </div>

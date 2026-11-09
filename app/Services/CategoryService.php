@@ -149,6 +149,21 @@ class CategoryService
                     'popular_product' => null,
                     'new_product' => null,
                 ],
+                [
+                    // Opens a two-entrance panel instead of the product layout.
+                    'key' => 'gallery',
+                    'name' => 'Virtual Gallery',
+                    'description' => 'Explore Myanmar silver and brass artworks in our virtual gallery.',
+                    'url' => url('/silver-art-gallery'),
+                    'image' => asset('images/menu/gallery-thumbnail.jpg'),
+                    'entrances' => [
+                        ['name' => 'Silver Entrance', 'url' => url('/silver-art-gallery'), 'image' => asset('images/menu/gallery-silver-entrance.jpg')],
+                        ['name' => 'Brass Entrance', 'url' => url('/brass-art-gallery'), 'image' => asset('images/menu/gallery-brass-entrance.jpg')],
+                    ],
+                    'categories' => [],
+                    'popular_product' => null,
+                    'new_product' => null,
+                ],
             ];
         });
     }
