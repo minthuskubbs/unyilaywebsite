@@ -325,6 +325,12 @@
 }
 .unyl-menu-gallery-link:hover { background: rgba(242, 242, 242, 0.08); }
 .unyl-menu-mobile-detail .unyl-menu-gallery-link { margin-top: 20px; }
+/* Virtual Gallery: the two entrance images take the middle and categories columns. */
+.unyl-menu-stage2__entrances { grid-column: 2 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-content: start; }
+.unyl-menu-card--entrance { min-height: 0; aspect-ratio: 1 / 1; background: #0a0a0a; transition: transform 0.2s ease; }
+.unyl-menu-card--entrance img { object-fit: cover; }
+.unyl-menu-card--entrance:hover { transform: translateY(-2px); }
+.unyl-menu-mobile-entrances { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
 .unyl-menu-stage2__teasers { display: flex; gap: 16px; }
 .unyl-menu-stage2__teasers .unyl-menu-card { flex: 1; min-height: 130px; }
 
