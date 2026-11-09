@@ -93,6 +93,12 @@
 
 .unyl-contact__form-section { max-width: 700px; margin: 0 auto; padding: 0 6vw 60px; }
 .unyl-contact__form-section h2 { font-family: var(--font-serif); font-weight: 400; font-size: 28px; margin: 0 0 24px; text-align: center; }
+/* Smaller Send button on the contact form only; !important beats the sitewide mobile .unyl-btn rule. */
+.unyl-contact__form .unyl-btn {
+    font-size: 14px !important;
+    padding: 12px 12px !important;
+    height: 48px !important;
+}
 .unyl-contact__flash {
     background: rgba(46, 204, 113, 0.12);
     border: 1px solid rgba(46, 204, 113, 0.3);
